@@ -27,7 +27,7 @@ export const viewSingleLoanApplication = async (req, res) => {
     try {
         const loan = await Loan.findById(req.params.id);
         if (!loan) {
-            return res.status(404).json({ error: 'Loan application not found!' });
+            return res.status(404).json({ error: 'Loan application not found..!' });
         }
         res.status(200).json(loan);
     } catch (error) {
