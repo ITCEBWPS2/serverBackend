@@ -19,13 +19,13 @@ const memberSchema = mongoose.Schema(
         required: true,
       },
       epf: {
-        type: String,
+        type: Number,
         required: true,
       },
-      status: {
-        type: String,
-        required: true,
-      },
+      // status: {
+      //   type: String,
+      //   required: true,
+      // },
       dateOfJoined: {
         type: String,
         required: true,
@@ -39,7 +39,7 @@ const memberSchema = mongoose.Schema(
         required: true,
       },
       welfareNo: {
-        type: String,
+        type: Number,
         required: true,
       },
       role: {
@@ -56,17 +56,25 @@ const memberSchema = mongoose.Schema(
         type: String,
         required: true,
       },
+      branch: {
+        type: String,
+        required: true,
+      },
+      unit: {
+        type: String,
+        required: true,
+      },
       // status: {
       //   type: String,
       //   required: true,
       // },
       contactNo: {
         whatsappNo: {
-          type: String,
+          type: Number,
           required: true,
         },
         number: {
-          type: String,
+          type: Number,
           required: true,
         }
       },
@@ -74,25 +82,57 @@ const memberSchema = mongoose.Schema(
       spouseName: {
         type: String,
       },
-      noOfChildren: {
-        type: String,
-       
-      },
-      aboutChildren: {
+    
+      childName: {
         type: String,
         
       },
-      noOfAdults: {
-        type: String,
+      childAge: {
+        type: Number,
        
       },
-      aboutAdults: {
+      genderChild: {
         type: String,
         
       },
-      loans: [],
+      motherName: {
+        type: String,
+        
+      },
+      motherAge: {
+        type: Number,
+       
+      },
+      fatherName: {
+        type: String,
+        
+      },
+      fatherAge: {
+        type: Number,
+        
+      },
+      motherInLawName: {
+        type: String,
+        
+      },
+      motherInLawAge: {
+        type: Number,
+       
+      },
+      fatherInLawName: {
+        type: String,
+        
+      },
+      fatherInLawAge: {
+        type: Number,
+        
+      },
+      loans: {
+        type: Array,
+        default: [],
+      },
       memberFee: {
-        type: String,
+        type: Number,
         required: true,
       },
 
