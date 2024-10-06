@@ -71,34 +71,37 @@ const memberSchema = mongoose.Schema(
       contactNo: {
         whatsappNo: {
           type: Number,
-          required: true,
+          // required: true,
         },
         number: {
           type: Number,
-          required: true,
+          // required: true,
         }
       },
       benefits:[String],
       spouseName: {
         type: String,
       },
-    
-      childName: {
-        type: String,
-        
+      children: {
+        name: {
+          type: String,
+          // required: true,
+        },
+        age: {
+          type: Number,
+          // required: true,
+        },
+        gender: {
+          type: String,
+          // required: true,
+        },
+
       },
-      childAge: {
-        type: Number,
-       
-      },
-      genderChild: {
-        type: String,
-        
-      },
+      // Updated: Array of childSchema
       motherName: {
         type: String,
-        
       },
+  
       motherAge: {
         type: Number,
        
