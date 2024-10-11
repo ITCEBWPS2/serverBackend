@@ -9,7 +9,7 @@ const memberSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      // required: true,
       unique: true,
     },
     password: {
@@ -22,15 +22,15 @@ const memberSchema = mongoose.Schema(
     },
     dateOfJoined: {
       type: String,
-      required: true,
+      // required: true,
     },
     dateOfBirth: {
       type: String,
-      required: true,
+      // required: true,
     },
     dateOfRegistered: {
       type: String,
-      required: true,
+      // required: true,
     },
     welfareNo: {
       type: Number,
@@ -48,15 +48,15 @@ const memberSchema = mongoose.Schema(
     },
     division: {
       type: String,
-      required: true,
+      // required: true,
     },
     branch: {
       type: String,
-      required: true,
+      // required: true,
     },
     unit: {
       type: String,
-      required: true,
+      // required: true,
     },
     // status: {
     //   type: String,
@@ -65,11 +65,11 @@ const memberSchema = mongoose.Schema(
     contactNo: {
       whatsappNo: {
         type: Number,
-        required: true,
+        // required: true,
       },
       number: {
         type: Number,
-        required: true,
+        // required: true,
       },
     },
     benefits: [String],
