@@ -76,22 +76,23 @@ const memberSchema = mongoose.Schema(
     spouseName: {
       type: String,
     },
-
-    children: [
+    
+    test:
+    [
       {
         name: {
           type: String,
-          // required: true,
+          required: false,
         },
         age: {
           type: Number,
-          // required: true,
+          required: false,
         },
         gender: {
           type: String,
-          // required: true,
+          required: false,
         },
-      },
+      }
     ],
 
     // Updated: Array of childSchema

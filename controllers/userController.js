@@ -63,7 +63,7 @@ const registerUser = async (req, res) => {
     unit,
     contactNo,
     spouseName,
-    children, // Updated: Expecting an array of child objects
+    test, // Updated: Expecting an array of child objects
     motherName,
     motherAge,
     fatherName,
@@ -98,7 +98,7 @@ const registerUser = async (req, res) => {
       unit,
       contactNo,
       spouseName,
-      children,
+      test,
       motherName,
       motherAge,
       fatherName,
