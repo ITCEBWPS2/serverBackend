@@ -76,7 +76,7 @@ const registerUser = async (req, res) => {
   } = req.body;
 
   try {
-    const userExists = await Member.findOne({ email });
+    const userExists = await Member.findOne({ epf });
 
     if (userExists) {
       res.status(400);
