@@ -15,7 +15,7 @@ const memberSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
     },
     epf: {
       type: Number,

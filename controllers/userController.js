@@ -51,7 +51,7 @@ const registerUser = async (req, res) => {
   const {
     name,
     email,
-    password,
+    // password,
     epf,
     dateOfJoined,
     dateOfBirth,
@@ -86,7 +86,7 @@ const registerUser = async (req, res) => {
     const newUser = new Member({
       name,
       email,
-      password,
+      // password,
       epf,
       dateOfJoined,
       dateOfBirth,
