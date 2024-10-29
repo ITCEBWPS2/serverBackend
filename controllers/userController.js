@@ -69,7 +69,39 @@ const authUser = async (req, res) => {
   }
 };
 
+// @desc Register user
+// route POST /api/users
+// @access Public
+const registerUser = async (req, res) => {
+  const {
+    name,
+    email,
+    password,
+    epf,
+    dateOfJoined,
+    dateOfBirth,
+    dateOfRegistered,
+    welfareNo,
+    payroll,
+    division,
+    branch,
+    unit,
+    contactNo,
+    spouseName,
+    test, // Updated: Expecting an array of child objects
+    motherName,
+    motherAge,
+    fatherName,
+    fatherAge,
+    motherInLawName,
+    motherInLawAge,
+    fatherInLawName,
+    fatherInLawAge,
+    memberFee,
+  } = req.body;
 
+  try {
+    const userExists = await Member.findOne({ email });
 
 // @desc Register user
 // route POST /api/users
