@@ -28,12 +28,14 @@ app.use(express.urlencoded({ extended: true }));
 // Extract cookie data from HTTP requests
 app.use(cookieParser());
 
-app.use(cors());
+//app.use(cors());
 
-// app.use(cors({
-//   origin: 'http://localhost:5173',
-//   credentials: true,
-// }));
+app.use(
+  cors({
+    origin: "https://cebwelfare.netlify.app",
+    credentials: true,
+  })
+);
 
 app.use("/api/members", userRoutes);
 app.use("/api/loans", loanRoutes);
