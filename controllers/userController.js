@@ -101,40 +101,6 @@ const registerUser = async (req, res) => {
   } = req.body;
 
   try {
-    const userExists = await Member.findOne({ email });
-
-// @desc Register user
-// route POST /api/users
-// @access Public
-const registerUser = async (req, res) => {
-  const {
-    name,
-    email,
-    // password,
-    epf,
-    dateOfJoined,
-    dateOfBirth,
-    dateOfRegistered,
-    welfareNo,
-    payroll,
-    division,
-    branch,
-    unit,
-    contactNo,
-    spouseName,
-    test, // Updated: Expecting an array of child objects
-    motherName,
-    motherAge,
-    fatherName,
-    fatherAge,
-    motherInLawName,
-    motherInLawAge,
-    fatherInLawName,
-    fatherInLawAge,
-    memberFee,
-  } = req.body;
-
-  try {
     const userExists = await Member.findOne({ epf });
 
     if (userExists) {
@@ -217,7 +183,7 @@ const getUserProfile = async (req, res) => {
     const user = await Member.findById(req.user._id).select(
       "name email epf dateOfJoined dateOfBirth dateOfRegistered welfareNo role payroll division branch unit contactNo spouseName test motherName motherAge fatherName fatherAge motherInLawName motherInLawAge fatherInLawName fatherInLawAge memberFee"
     );
-    
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -228,7 +194,6 @@ const getUserProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 // @desc Get all users
 // route GET /api/members
