@@ -28,7 +28,14 @@ app.use(express.urlencoded({ extended: true }));
 // Extract cookie data from HTTP requests
 app.use(cookieParser());
 
-app.use(cors());
+//app.use(cors());
+
+app.use(cors({
+  origin: 'http://localhost:5173', // Update to your frontend URL
+  credentials: true, // Allow cookies to be sent across origins
+}));
+
+
 app.use("/api/members", userRoutes);
 app.use('/api/loans', loanRoutes);
 

@@ -19,30 +19,57 @@ const deleteUser = async (req, res) => {
 // @desc Auth user/set token
 // route POST /api/users/auth
 // @access Public
+// const authUser = async (req, res) => {
+//   const { epf, password } = req.body; // Changed from email to epf
+
+//   try {
+//     const user = await Member.findOne({ epf }); // Find by EPF number
+
+//     if (user && (await user.matchPassword(password))) {
+//       generateToken(user._id, res);
+//       res.status(200).json({
+//         _id: user._id,
+//         name: user.name,
+//         epf: user.epf,
+//         role: user.role, // Include role for admin check
+//         token: generateToken(user._id, res),
+//       });
+//     } else {
+//       res.status(401);
+//       throw new Error("Invalid EPF number or password!");
+//     }
+//   } catch (error) {
+//     console.log("authUser", error);
+//     res.status(404).json({ message: error.message });
+//   }
+// };
+
 const authUser = async (req, res) => {
-  const { epf, password } = req.body; // Changed from email to epf
+  const { epf, password } = req.body;
 
   try {
-    const user = await Member.findOne({ epf }); // Find by EPF number
+    const user = await Member.findOne({ epf });
 
     if (user && (await user.matchPassword(password))) {
-      generateToken(user._id, res);
+      // Generate and set token in cookie
+      const token = generateToken(user._id, res); // res.cookie set in generateToken
       res.status(200).json({
         _id: user._id,
         name: user.name,
         epf: user.epf,
-        role: user.role, // Include role for admin check
-        token: generateToken(user._id, res),
+        role: user.role,
+        token,
       });
     } else {
-      res.status(401);
-      throw new Error("Invalid EPF number or password!");
+      res.status(401).json({ message: "Invalid EPF number or password!" });
     }
   } catch (error) {
     console.log("authUser", error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 // @desc Register user
 // route POST /api/users
@@ -136,19 +163,40 @@ const logoutUser = async (req, res) => {
   }
 };
 
+// // @desc Get user profile
+// // route GET /api/users/profile
+// // @access Private
+// const getUserProfile = async (req, res) => {
+//   const user = {
+//     _id: req.user._id,
+//     name: req.user.name,
+//     email: req.user.email,
+//     epf: req.user.epf,
+//     role: req.user.role,
+//   };
+//   res.status(200).json(user);
+// };
+
 // @desc Get user profile
 // route GET /api/users/profile
 // @access Private
 const getUserProfile = async (req, res) => {
-  const user = {
-    _id: req.user._id,
-    name: req.user.name,
-    email: req.user.email,
-    epf: req.user.epf,
-    role: req.user.role,
-  };
-  res.status(200).json(user);
+  try {
+    const user = await Member.findById(req.user._id).select(
+      "name email epf dateOfJoined dateOfBirth dateOfRegistered welfareNo role payroll division branch unit contactNo spouseName test motherName motherAge fatherName fatherAge motherInLawName motherInLawAge fatherInLawName fatherInLawAge memberFee"
+    );
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
+
 
 // @desc Get all users
 // route GET /api/members
