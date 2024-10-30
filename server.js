@@ -32,7 +32,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "https://cebwelfare.netlify.app",
+    origin: "https://cebwps2welfare.netlify.app",
     credentials: true,
   })
 );
