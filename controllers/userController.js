@@ -161,26 +161,12 @@ const logoutUser = async (req, res) => {
   }
 };
 
-// // @desc Get user profile
-// // route GET /api/users/profile
-// // @access Private
-// const getUserProfile = async (req, res) => {
-//   const user = {
-//     _id: req.user._id,
-//     name: req.user.name,
-//     email: req.user.email,
-//     epf: req.user.epf,
-//     role: req.user.role,
-//   };
-//   res.status(200).json(user);
-// };
-
 // @desc Get user profile
-// route GET /api/users/profile
+// route GET /api/users/:id
 // @access Private
 const getUserProfile = async (req, res) => {
   try {
-    const user = await Member.findById(req.user._id).select(
+    const user = await Member.findById(req.params.id).select(
       "name email epf dateOfJoined dateOfBirth dateOfRegistered welfareNo role payroll division branch unit contactNo spouseName test motherName motherAge fatherName fatherAge motherInLawName motherInLawAge fatherInLawName fatherInLawAge memberFee"
     );
 
