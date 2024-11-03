@@ -16,7 +16,7 @@ const app = express();
 
 app.get("/.netlify/functions/api", (req, res) => {
   return res.json({
-    message: "Hello from serverless function",
+    message: "Hello from serverless function !!!",
   });
 });
 
