@@ -17,7 +17,7 @@ const memberSchema = mongoose.Schema(
       required: true,
     },
     epf: {
-      type: Number,
+      type: String,
       required: true,
     },
     dateOfJoined: {
@@ -31,7 +31,7 @@ const memberSchema = mongoose.Schema(
       //required: true,
     },
     welfareNo: {
-      type: Number,
+      type: String,
       required: true,
     },
     role: {

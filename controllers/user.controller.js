@@ -2,11 +2,11 @@ import Member from "../models/member.model.js";
 import generateToken from "../utils/generateToken.js";
 
 const authUser = async (req, res) => {
-  const { epf, email, password } = req.body;
+  const { identifier, password } = req.body;
 
   try {
     const user = await Member.findOne({
-      $or: [{ email }, { epf }],
+      $or: [{ email: identifier }, { epf: identifier }],
     });
 
     if (user && (await user.matchPassword(password))) {
