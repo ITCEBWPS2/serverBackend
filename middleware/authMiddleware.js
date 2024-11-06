@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../models/user.model.js";
+import Member from "../models/member.model.js";
 
 const protect = async (req, res, next) => {
   try {
@@ -12,7 +12,7 @@ const protect = async (req, res, next) => {
         // Create a decoded user object from the token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         // Assign the decoded user to current user
-        req.user = await User.findById(decoded.userId).select("-password");
+        req.user = await Member.findById(decoded.userId).select("-password");
 
         next();
       } catch (error) {

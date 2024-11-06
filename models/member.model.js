@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-const userSchema = mongoose.Schema(
+const memberSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema(
     },
     dateOfRegistered: {
       type: String,
-      required: true,
+      //required: true,
     },
     welfareNo: {
       type: Number,
@@ -117,7 +117,7 @@ const userSchema = mongoose.Schema(
 );
 
 // Middleware for hashing passwords
-userSchema.pre("save", async function (next) {
+memberSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
   }
@@ -127,10 +127,10 @@ userSchema.pre("save", async function (next) {
 });
 
 // Match passwords when login
-userSchema.methods.matchPassword = async function (enteredPassword) {
+memberSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
+const Member = mongoose.model("Member", memberSchema);
 
-export default User;
+export default Member;

@@ -1,4 +1,4 @@
-import User from "../models/user.model.js";
+import Member from "../models/member.model.js";
 import generateToken from "../utils/generateToken.js";
 
 // @desc Delete user
@@ -45,10 +45,12 @@ const deleteUser = async (req, res) => {
 // };
 
 const authUser = async (req, res) => {
-  const { epf, password } = req.body;
+  const { epf, email, password } = req.body;
 
   try {
-    const user = await Member.findOne({ epf });
+    const user = await Member.findOne({
+      $or: [{ email }, { epf }],
+    });
 
     if (user && (await user.matchPassword(password))) {
       // Generate and set token in cookie
@@ -61,7 +63,7 @@ const authUser = async (req, res) => {
         token,
       });
     } else {
-      res.status(401).json({ message: "Invalid EPF number or password!" });
+      res.status(401).json({ message: "Invalid EPF/ Email or Password!" });
     }
   } catch (error) {
     console.log("authUser", error);
@@ -69,10 +71,10 @@ const authUser = async (req, res) => {
   }
 };
 
-// @desc Register user
-// route POST /api/users
-// @access Public
-const registerUser = async (req, res) => {
+// @desc Register Member
+// route POST /api/members
+// @access Private
+const registerMember = async (req, res) => {
   const {
     name,
     email,
@@ -82,13 +84,14 @@ const registerUser = async (req, res) => {
     dateOfBirth,
     dateOfRegistered,
     welfareNo,
+    role,
     payroll,
     division,
     branch,
     unit,
     contactNo,
     spouseName,
-    test, // Updated: Expecting an array of child objects
+    children,
     motherName,
     motherAge,
     fatherName,
@@ -101,7 +104,9 @@ const registerUser = async (req, res) => {
   } = req.body;
 
   try {
-    const userExists = await Member.findOne({ epf });
+    const userExists = await Member.findOne({
+      $or: [{ email }, { epf }, { welfareNo }],
+    });
 
     if (userExists) {
       res.status(400);
@@ -111,19 +116,20 @@ const registerUser = async (req, res) => {
     const newUser = new Member({
       name,
       email,
-      // password,
+      password,
       epf,
       dateOfJoined,
       dateOfBirth,
       dateOfRegistered,
       welfareNo,
+      role,
       payroll,
       division,
       branch,
       unit,
       contactNo,
       spouseName,
-      test,
+      children,
       motherName,
       motherAge,
       fatherName,
@@ -217,7 +223,7 @@ const updateUserProfile = async (req, res) => {
 
 export {
   authUser,
-  registerUser,
+  registerMember,
   logoutUser,
   getUserProfile,
   updateUserProfile,
