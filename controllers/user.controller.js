@@ -1,49 +1,6 @@
 import Member from "../models/member.model.js";
 import generateToken from "../utils/generateToken.js";
 
-// @desc Delete user
-// route DELETE /api/users/:id
-// @access Private
-const deleteUser = async (req, res) => {
-  try {
-    const user = await Member.findByIdAndDelete(req.params.id);
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
-    res.send({ message: "User deleted successfully" });
-  } catch (error) {
-    res.status(500).send({ message: "Internal Server Error", error });
-  }
-};
-
-// @desc Auth user/set token
-// route POST /api/users/auth
-// @access Public
-// const authUser = async (req, res) => {
-//   const { epf, password } = req.body; // Changed from email to epf
-
-//   try {
-//     const user = await Member.findOne({ epf }); // Find by EPF number
-
-//     if (user && (await user.matchPassword(password))) {
-//       generateToken(user._id, res);
-//       res.status(200).json({
-//         _id: user._id,
-//         name: user.name,
-//         epf: user.epf,
-//         role: user.role, // Include role for admin check
-//         token: generateToken(user._id, res),
-//       });
-//     } else {
-//       res.status(401);
-//       throw new Error("Invalid EPF number or password!");
-//     }
-//   } catch (error) {
-//     console.log("authUser", error);
-//     res.status(404).json({ message: error.message });
-//   }
-// };
-
 const authUser = async (req, res) => {
   const { epf, email, password } = req.body;
 
@@ -54,11 +11,10 @@ const authUser = async (req, res) => {
 
     if (user && (await user.matchPassword(password))) {
       // Generate and set token in cookie
-      const token = generateToken(user._id, res); // res.cookie set in generateToken
+      const token = generateToken(user._id, res);
       res.status(200).json({
         _id: user._id,
         name: user.name,
-        epf: user.epf,
         role: user.role,
         token,
       });
@@ -218,6 +174,21 @@ const updateUserProfile = async (req, res) => {
     res.status(200).json(updatedMember);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc Delete user
+// route DELETE /api/users/:id
+// @access Private
+const deleteUser = async (req, res) => {
+  try {
+    const user = await Member.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    res.send({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
   }
 };
 
