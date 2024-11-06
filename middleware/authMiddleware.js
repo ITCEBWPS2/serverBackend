@@ -1,36 +1,30 @@
 import jwt from "jsonwebtoken";
-import Member from "../models/memberModel.js";
+import User from "../models/user.model.js";
 
 const protect = async (req, res, next) => {
   try {
     let token;
 
-    // Retrieve token from cookies or Authorization header
-    if (req.cookies.jwt) {
-      token = req.cookies.jwt;
-    } else if (req.headers.authorization?.startsWith("Bearer")) {
-      token = req.headers.authorization.split(" ")[1];
-    }
+    token = req.cookies.jwt;
 
-    if (!token) {
-      return res.status(401).json({ message: "Not authorized, no token provided" });
-    }
+    if (token) {
+      try {
+        // Create a decoded user object from the token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // Assign the decoded user to current user
+        req.user = await User.findById(decoded.userId).select("-password");
 
-    try {
-      // Verify token and use userId from the decoded payload
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await Member.findById(decoded.userId).select("-password");
-
-      if (!req.user) {
-        return res.status(401).json({ message: "User not found for this token" });
+        next();
+      } catch (error) {
+        res.status(401);
+        throw new Error("Invalid Token");
       }
-
-      next();
-    } catch (error) {
-      res.status(401).json({ message: "Invalid token" });
+    } else {
+      res.status(401);
+      throw new Error("Not authorized, No Token");
     }
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(401).json({ message: error.message });
   }
 };
 

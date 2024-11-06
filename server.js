@@ -29,7 +29,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Set up CORS to allow requests from multiple origins
-const allowedOrigins = ['http://localhost:5173', 'https://cebwps2welfare.netlify.app'];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://cebwps2welfare.netlify.app",
+  "https://cebwelfare.netlify.app",
+];
 
 app.use(
   cors({
@@ -39,10 +43,10 @@ app.use(
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true
+    credentials: true,
   })
 );
 
@@ -61,9 +65,6 @@ export const handler = async (event, context) => {
   const result = await ServerlessHttp(app)(event, context);
   return result;
 };
-
-
-
 
 // import express from "express";
 // import dotenv from "dotenv";
