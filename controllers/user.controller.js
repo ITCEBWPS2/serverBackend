@@ -1,6 +1,9 @@
 import Member from "../models/member.model.js";
 import generateToken from "../utils/generateToken.js";
 
+// @desc Auhenticate User
+// @route POST /api/auth
+// @access Public (Admin/Member)
 const authUser = async (req, res) => {
   const { identifier, password } = req.body;
 
@@ -28,8 +31,8 @@ const authUser = async (req, res) => {
 };
 
 // @desc Register Member
-// route POST /api/members
-// @access Private
+// @route POST /api/members
+// @access Private (Admin)
 const registerMember = async (req, res) => {
   const {
     name,
@@ -108,9 +111,9 @@ const registerMember = async (req, res) => {
   }
 };
 
-// @desc Logout user
-// route POST /api/users/logout
-// @access Private
+// @desc Logout User
+// @route POST /api/members/logout
+// @access Private (Admin/Member)
 const logoutUser = async (req, res) => {
   try {
     res.cookie("jwt", "", {
@@ -123,10 +126,10 @@ const logoutUser = async (req, res) => {
   }
 };
 
-// @desc Get user profile
-// route GET /api/users/:id
-// @access Private
-const getUserProfile = async (req, res) => {
+// @desc Get User Details
+// @route GET /api/members/:id
+// @access Private (Admin/Member)
+const getUserDetails = async (req, res) => {
   try {
     const user = await Member.findById(req.params.id).select(
       "name email epf dateOfJoined dateOfBirth dateOfRegistered welfareNo role payroll division branch unit contactNo spouseName test motherName motherAge fatherName fatherAge motherInLawName motherInLawAge fatherInLawName fatherInLawAge memberFee"
@@ -143,28 +146,28 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-// @desc Get all users
-// route GET /api/members
-// @access Private
+// @desc Get All Users
+// @route GET /api/members
+// @access Private (Admin)
 const getAllUsers = async (req, res) => {
   try {
     const members = await Member.find();
     res.json(members);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server Error");
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// @desc Update user profile
-// route PUT /api/users/:id
-// @access Private
-const updateUserProfile = async (req, res) => {
+// @desc Update User Details
+// @route PUT /api/members/:id
+// @access Private (Admin)
+const updateUserDetails = async (req, res) => {
   try {
     const updatedMember = await Member.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true } // Return the updated document and run validators
+      { new: true, runValidators: true }
     );
 
     if (!updatedMember) {
@@ -177,9 +180,9 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-// @desc Delete user
-// route DELETE /api/users/:id
-// @access Private
+// @desc Delete User
+// @route DELETE /api/members/:id
+// @access Private (Admin)
 const deleteUser = async (req, res) => {
   try {
     const user = await Member.findByIdAndDelete(req.params.id);
@@ -196,8 +199,8 @@ export {
   authUser,
   registerMember,
   logoutUser,
-  getUserProfile,
-  updateUserProfile,
+  getUserDetails,
+  updateUserDetails,
   getAllUsers,
   deleteUser,
 };

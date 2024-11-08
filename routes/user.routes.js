@@ -2,8 +2,8 @@ import express from "express";
 import {
   authUser,
   registerMember,
-  getUserProfile,
-  updateUserProfile,
+  updateUserDetails,
+  getUserDetails,
   logoutUser,
   getAllUsers,
   deleteUser,
@@ -20,8 +20,8 @@ router
   .post(protect, isAdmin, registerMember);
 router
   .route("/:id")
-  .get(protect, getUserProfile)
-  .put(protect, isAdmin, updateUserProfile)
+  .get(protect, getUserDetails)
+  .put(protect, isAdmin, updateUserDetails)
   .delete(protect, isAdmin, deleteUser);
 
 export default router;
