@@ -102,11 +102,9 @@ const registerMember = async (req, res) => {
 
     await newUser.save();
 
-    const token = generateToken(newUser._id, res);
-    res.status(201).json({ data: { token, user: newUser } });
+    res.status(201).json({ data: { user: newUser } });
   } catch (error) {
     console.log(error);
-
     res.status(400).json({ message: error.message });
   }
 };
@@ -142,7 +140,7 @@ const getUserDetails = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     console.error("Error fetching user profile:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -153,9 +151,9 @@ const getAllUsers = async (req, res) => {
   try {
     const members = await Member.find();
     res.json(members);
-  } catch (err) {
+  } catch (error) {
     console.error(err.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -191,7 +189,7 @@ const deleteUser = async (req, res) => {
     }
     res.send({ message: "User deleted successfully" });
   } catch (error) {
-    res.status(500).send({ message: "Internal Server Error", error });
+    res.status(500).send({ message: error.message });
   }
 };
 

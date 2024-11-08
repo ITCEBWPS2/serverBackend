@@ -13,7 +13,7 @@ import { isAdmin, protect } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.post("/auth", authUser);
-router.post("/logout", protect, logoutUser);
+router.post("/logout", logoutUser);
 router
   .route("/")
   .get(protect, isAdmin, getAllUsers)
