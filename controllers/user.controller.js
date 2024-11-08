@@ -1,67 +1,25 @@
-import Member from "../models/memberModel.js";
+import Member from "../models/member.model.js";
 import generateToken from "../utils/generateToken.js";
 
-// @desc Delete user
-// route DELETE /api/users/:id
-// @access Private
-const deleteUser = async (req, res) => {
-  try {
-    const user = await Member.findByIdAndDelete(req.params.id);
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
-    res.send({ message: "User deleted successfully" });
-  } catch (error) {
-    res.status(500).send({ message: "Internal Server Error", error });
-  }
-};
-
-// @desc Auth user/set token
-// route POST /api/users/auth
-// @access Public
-// const authUser = async (req, res) => {
-//   const { epf, password } = req.body; // Changed from email to epf
-
-//   try {
-//     const user = await Member.findOne({ epf }); // Find by EPF number
-
-//     if (user && (await user.matchPassword(password))) {
-//       generateToken(user._id, res);
-//       res.status(200).json({
-//         _id: user._id,
-//         name: user.name,
-//         epf: user.epf,
-//         role: user.role, // Include role for admin check
-//         token: generateToken(user._id, res),
-//       });
-//     } else {
-//       res.status(401);
-//       throw new Error("Invalid EPF number or password!");
-//     }
-//   } catch (error) {
-//     console.log("authUser", error);
-//     res.status(404).json({ message: error.message });
-//   }
-// };
-
 const authUser = async (req, res) => {
-  const { epf, password } = req.body;
+  const { identifier, password } = req.body;
 
   try {
-    const user = await Member.findOne({ epf });
+    const user = await Member.findOne({
+      $or: [{ email: identifier }, { epf: identifier }],
+    });
 
     if (user && (await user.matchPassword(password))) {
       // Generate and set token in cookie
-      const token = generateToken(user._id, res); // res.cookie set in generateToken
+      const token = generateToken(user._id, res);
       res.status(200).json({
         _id: user._id,
         name: user.name,
-        epf: user.epf,
         role: user.role,
         token,
       });
     } else {
-      res.status(401).json({ message: "Invalid EPF number or password!" });
+      res.status(401).json({ message: "Invalid EPF/ Email or Password!" });
     }
   } catch (error) {
     console.log("authUser", error);
@@ -69,10 +27,10 @@ const authUser = async (req, res) => {
   }
 };
 
-// @desc Register user
-// route POST /api/users
-// @access Public
-const registerUser = async (req, res) => {
+// @desc Register Member
+// route POST /api/members
+// @access Private
+const registerMember = async (req, res) => {
   const {
     name,
     email,
@@ -82,13 +40,14 @@ const registerUser = async (req, res) => {
     dateOfBirth,
     dateOfRegistered,
     welfareNo,
+    role,
     payroll,
     division,
     branch,
     unit,
     contactNo,
     spouseName,
-    test, // Updated: Expecting an array of child objects
+    children,
     motherName,
     motherAge,
     fatherName,
@@ -101,7 +60,9 @@ const registerUser = async (req, res) => {
   } = req.body;
 
   try {
-    const userExists = await Member.findOne({ epf });
+    const userExists = await Member.findOne({
+      $or: [{ email }, { epf }, { welfareNo }],
+    });
 
     if (userExists) {
       res.status(400);
@@ -111,19 +72,20 @@ const registerUser = async (req, res) => {
     const newUser = new Member({
       name,
       email,
-      // password,
+      password,
       epf,
       dateOfJoined,
       dateOfBirth,
       dateOfRegistered,
       welfareNo,
+      role,
       payroll,
       division,
       branch,
       unit,
       contactNo,
       spouseName,
-      test,
+      children,
       motherName,
       motherAge,
       fatherName,
@@ -215,9 +177,24 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+// @desc Delete user
+// route DELETE /api/users/:id
+// @access Private
+const deleteUser = async (req, res) => {
+  try {
+    const user = await Member.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    res.send({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
+};
+
 export {
   authUser,
-  registerUser,
+  registerMember,
   logoutUser,
   getUserProfile,
   updateUserProfile,

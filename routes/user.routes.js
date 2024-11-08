@@ -1,20 +1,20 @@
 import express from "express";
 import {
   authUser,
-  registerUser,
+  registerMember,
   getUserProfile,
   updateUserProfile,
   logoutUser,
   getAllUsers,
   deleteUser,
-} from "../controllers/userController.js";
+} from "../controllers/user.controller.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.get("/", getAllUsers);
 router.delete("/:id", deleteUser);
-router.post("/", registerUser);
+router.post("/", registerMember);
 router.post("/auth", authUser);
 router.post("/logout", logoutUser);
 router.put("/:id", updateUserProfile);
