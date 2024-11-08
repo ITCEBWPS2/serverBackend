@@ -8,21 +8,20 @@ import {
   getAllUsers,
   deleteUser,
 } from "../controllers/user.controller.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { isAdmin, protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.delete("/:id", deleteUser);
-router.post("/", registerMember);
 router.post("/auth", authUser);
-router.post("/logout", logoutUser);
-router.put("/:id", updateUserProfile);
-// router
-//   .route("/:id")
-//   .get(protect, getUserProfile)
-//   .put(protect, updateUserProfile);
-
-router.route("/:id").get(getUserProfile).put(updateUserProfile);
+router.post("/logout", protect, logoutUser);
+router
+  .route("/")
+  .get(protect, isAdmin, getAllUsers)
+  .post(protect, isAdmin, registerMember);
+router
+  .route("/:id")
+  .get(protect, getUserProfile)
+  .put(protect, isAdmin, updateUserProfile)
+  .delete(protect, isAdmin, deleteUser);
 
 export default router;

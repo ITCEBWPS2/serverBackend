@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import { notFound, errorHandler } from "./middleware/error.middleware.js";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/user.routes.js";
 import loanRoutes from "./routes/loanRoutes.js";
