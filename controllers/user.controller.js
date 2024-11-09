@@ -129,18 +129,38 @@ const logoutUser = async (req, res) => {
 // @access Private (Admin/Member)
 const getUserDetails = async (req, res) => {
   try {
-    const user = await Member.findById(req.params.id).select(
-      "name email epf dateOfJoined dateOfBirth dateOfRegistered welfareNo role payroll division branch unit contactNo spouseName test motherName motherAge fatherName fatherAge motherInLawName motherInLawAge fatherInLawName fatherInLawAge memberFee"
-    );
+    const member = await Member.findById(req.params.id);
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    // Return member data without the password field
+    const { password, ...memberWithoutPassword } = member.toObject();
+    res.status(200).json(memberWithoutPassword);
+  } catch (error) {
+    console.error("Error fetching member details:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc Get Logged In User Details
+// @route GET /api/members/me
+// @access Private (Admin/Member)
+const getLoggedInUserDetails = async (req, res) => {
+  try {
+    const user = await Member.findById(req.userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(user);
+    // Exclude the password before sending the response
+    const { password, ...userWithoutPassword } = user.toObject();
+    res.status(200).json(userWithoutPassword);
   } catch (error) {
-    console.error("Error fetching user profile:", error);
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching logged-in user details:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -198,6 +218,7 @@ export {
   registerMember,
   logoutUser,
   getUserDetails,
+  getLoggedInUserDetails,
   updateUserDetails,
   getAllUsers,
   deleteUser,

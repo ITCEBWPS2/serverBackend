@@ -4,6 +4,7 @@ import {
   registerMember,
   updateUserDetails,
   getUserDetails,
+  getLoggedInUserDetails,
   logoutUser,
   getAllUsers,
   deleteUser,
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.post("/auth", authUser);
 router.post("/logout", logoutUser);
+router.get("/me", protect, getLoggedInUserDetails);
 router
   .route("/")
   .get(protect, isAdmin, getAllUsers)
