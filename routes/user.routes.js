@@ -2,27 +2,28 @@ import express from "express";
 import {
   authUser,
   registerMember,
-  getUserProfile,
-  updateUserProfile,
+  updateUserDetails,
+  getUserDetails,
+  getLoggedInUserDetails,
   logoutUser,
   getAllUsers,
   deleteUser,
 } from "../controllers/user.controller.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { isAdmin, protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.delete("/:id", deleteUser);
-router.post("/", registerMember);
 router.post("/auth", authUser);
 router.post("/logout", logoutUser);
-router.put("/:id", updateUserProfile);
-// router
-//   .route("/:id")
-//   .get(protect, getUserProfile)
-//   .put(protect, updateUserProfile);
-
-router.route("/:id").get(getUserProfile).put(updateUserProfile);
+router.get("/me", protect, getLoggedInUserDetails);
+router
+  .route("/")
+  .get(protect, isAdmin, getAllUsers)
+  .post(protect, isAdmin, registerMember);
+router
+  .route("/:id")
+  .get(protect, getUserDetails)
+  .put(protect, isAdmin, updateUserDetails)
+  .delete(protect, isAdmin, deleteUser);
 
 export default router;

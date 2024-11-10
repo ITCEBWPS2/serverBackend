@@ -28,4 +28,20 @@ const protect = async (req, res, next) => {
   }
 };
 
-export { protect };
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res.status(403).json({ message: "Not authorized as an admin" });
+  }
+};
+
+const isAdminOrMember = (req, res, next) => {
+  if (req.user && (req.user.role === "admin" || req.user.role === "member")) {
+    next();
+  } else {
+    res.status(403).json({ message: "Not authorized as an admin or member" });
+  }
+};
+
+export { protect, isAdmin, isAdminOrMember };
