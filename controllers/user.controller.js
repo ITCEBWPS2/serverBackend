@@ -2,7 +2,7 @@ import Member from "../models/member.model.js";
 import generateToken from "../utils/generateToken.js";
 
 // @desc Auhenticate User
-// @route POST /api/auth
+// @route POST /api/members/auth
 // @access Public (Admin/Member)
 const authUser = async (req, res) => {
   const { identifier, password } = req.body;
@@ -149,17 +149,13 @@ const getUserDetails = async (req, res) => {
 // @access Private (Admin/Member)
 const getLoggedInUserDetails = async (req, res) => {
   try {
-    const user = await Member.findById(req.userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const user = req.user;
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(401).json({ message: "Not authenticated" });
     }
-
-    // Exclude the password before sending the response
-    const { password, ...userWithoutPassword } = user.toObject();
-    res.status(200).json(userWithoutPassword);
   } catch (error) {
-    console.error("Error fetching logged-in user details:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
