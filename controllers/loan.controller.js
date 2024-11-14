@@ -35,7 +35,7 @@ export const createLoanApplication = async (req, res) => {
 };
 
 // @desc Get Loans by User ID
-// @route POST /api/loans/userId
+// @route GET /api/loans/user/:userId
 // @access Private (Admin/Member)
 export const getLoansByUserId = async (req, res) => {
   try {
@@ -60,7 +60,9 @@ export const getLoansByUserId = async (req, res) => {
   }
 };
 
-// View all loan applications
+// @desc View All Loan Applications
+// @route GET /api/loans
+// @access Private (Admin)
 export const viewAllLoanApplications = async (req, res) => {
   try {
     const loans = await Loan.find();
@@ -70,7 +72,9 @@ export const viewAllLoanApplications = async (req, res) => {
   }
 };
 
-// View a single loan application by ID
+// @desc View Single Loan Application
+// @route GET /api/loans/:id
+// @access Private (Admin/Member)
 export const viewSingleLoanApplication = async (req, res) => {
   try {
     const loan = await Loan.findById(req.params.id);
@@ -83,7 +87,45 @@ export const viewSingleLoanApplication = async (req, res) => {
   }
 };
 
-// Update a loan application by ID
+// @desc Update Loan Status
+// @route PUT /api/loans/:id/status
+// @access Private (Admin)
+export const updateLoanStatus = async (req, res) => {
+  try {
+    const { loanId } = req.params;
+    const { loanStatus } = req.body;
+
+    const allowedStatuses = ["pending", "approved", "rejected"];
+    if (!allowedStatuses.includes(loanStatus)) {
+      return res.status(400).json({ message: "Invalid loan status" });
+    }
+
+    const updatedLoan = await Loan.findByIdAndUpdate(
+      loanId,
+      { loanStatus },
+      { new: true }
+    );
+
+    if (!updatedLoan) {
+      return res.status(404).json({ message: "Loan not found" });
+    }
+
+    res.status(200).json({
+      message: "Loan status updated successfully",
+      loan: updatedLoan,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to update loan status",
+      error: error.message,
+    });
+  }
+};
+
+// @desc Update Loan Application
+// @route PUT /api/loans/:id
+// @access Private (Admin)
 export const updateLoanApplication = async (req, res) => {
   try {
     const loan = await Loan.findByIdAndUpdate(req.params.id, req.body, {
@@ -99,7 +141,9 @@ export const updateLoanApplication = async (req, res) => {
   }
 };
 
-// Delete a loan application by ID
+// @desc Delete Loan Application
+// @route DELETE /api/loans/:id
+// @access Private (Admin)
 export const deleteLoanApplication = async (req, res) => {
   try {
     const loan = await Loan.findByIdAndDelete(req.params.id);
