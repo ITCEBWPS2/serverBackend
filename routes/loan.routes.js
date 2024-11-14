@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createLoanApplication,
+  getLoansByUserId,
   viewAllLoanApplications,
   viewSingleLoanApplication,
   updateLoanApplication,

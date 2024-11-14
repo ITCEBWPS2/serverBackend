@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 // @desc Auhenticate User
 // @route POST /api/members/auth
 // @access Public (Admin/Member)
-const authUser = async (req, res) => {
+export const authUser = async (req, res) => {
   const { identifier, password } = req.body;
 
   try {
@@ -34,7 +34,7 @@ const authUser = async (req, res) => {
 // @desc Register Member
 // @route POST /api/members
 // @access Private (Admin)
-const registerMember = async (req, res) => {
+export const registerMember = async (req, res) => {
   const {
     name,
     email,
@@ -113,7 +113,7 @@ const registerMember = async (req, res) => {
 // @desc Logout User
 // @route POST /api/members/logout
 // @access Private (Admin/Member)
-const logoutUser = async (req, res) => {
+export const logoutUser = async (req, res) => {
   try {
     res.cookie("jwt", "", {
       httpOnly: true,
@@ -128,7 +128,7 @@ const logoutUser = async (req, res) => {
 // @desc Get User Details
 // @route GET /api/members/:id
 // @access Private (Admin/Member)
-const getUserDetails = async (req, res) => {
+export const getUserDetails = async (req, res) => {
   try {
     const member = await Member.findById(req.params.id);
 
@@ -148,7 +148,7 @@ const getUserDetails = async (req, res) => {
 // @desc Get Logged In User Details
 // @route GET /api/members/me
 // @access Private (Admin/Member)
-const getLoggedInUserDetails = async (req, res) => {
+export const getLoggedInUserDetails = async (req, res) => {
   try {
     const user = req.user;
     if (user) {
@@ -164,7 +164,7 @@ const getLoggedInUserDetails = async (req, res) => {
 // @desc Get All Users
 // @route GET /api/members
 // @access Private (Admin)
-const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     const members = await Member.find();
     res.json(members);
@@ -195,7 +195,7 @@ const getAllUsers = async (req, res) => {
 //   }
 // };
 
-const updateUserDetails = async (req, res) => {
+export const updateUserDetails = async (req, res) => {
   try {
     // Find the member by ID
     const member = await Member.findById(req.params.id);
@@ -222,7 +222,7 @@ const updateUserDetails = async (req, res) => {
 // @desc Delete User
 // @route DELETE /api/members/:id
 // @access Private (Admin)
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
     const user = await Member.findByIdAndDelete(req.params.id);
     if (!user) {
@@ -232,15 +232,4 @@ const deleteUser = async (req, res) => {
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
-};
-
-export {
-  authUser,
-  registerMember,
-  logoutUser,
-  getUserDetails,
-  getLoggedInUserDetails,
-  updateUserDetails,
-  getAllUsers,
-  deleteUser,
 };

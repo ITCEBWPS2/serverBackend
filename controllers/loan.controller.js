@@ -1,7 +1,9 @@
 import Loan from "../models/loan.model.js";
 import Member from "../models/member.model.js";
 
-// Create a new loan application
+// @desc Create a Loan Application
+// @route POST /api/loans
+// @access Private (Admin/Member)
 export const createLoanApplication = async (req, res) => {
   try {
     const memberId = req.user.id;
@@ -32,7 +34,32 @@ export const createLoanApplication = async (req, res) => {
   }
 };
 
-//this is
+// @desc Get Loans by User ID
+// @route POST /api/loans/userId
+// @access Private (Admin/Member)
+export const getLoansByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const member = await Member.findById(userId).populate("loans");
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    res.status(200).json({
+      message: "Loans retrieved successfully",
+      loans: member.loans,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to retrieve loans",
+      error: error.message,
+    });
+  }
+};
+
 // View all loan applications
 export const viewAllLoanApplications = async (req, res) => {
   try {
@@ -42,7 +69,7 @@ export const viewAllLoanApplications = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-// this is second change
+
 // View a single loan application by ID
 export const viewSingleLoanApplication = async (req, res) => {
   try {
