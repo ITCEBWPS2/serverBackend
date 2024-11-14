@@ -4,25 +4,27 @@ import {
   getLoansByUserId,
   viewAllLoanApplications,
   viewSingleLoanApplication,
+  updateLoanStatus,
   updateLoanApplication,
   deleteLoanApplication,
 } from "../controllers/loan.controller.js";
+import { isAdmin, protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// Route to create a new loan application
-router.post("/", createLoanApplication);
+router
+  .route("/")
+  .post(protect, createLoanApplication)
+  .get(protect, isAdmin, viewAllLoanApplications);
 
-// Route to view all loan applications
-router.get("/", viewAllLoanApplications);
+router
+  .route("/:id")
+  .get(protect, viewSingleLoanApplication)
+  .put(protect, isAdmin, updateLoanApplication)
+  .delete(protect, isAdmin, deleteLoanApplication);
 
-// Route to view a single loan application by ID
-router.get("/:id", viewSingleLoanApplication);
+router.get("/user/:userId", protect, getLoansByUserId);
 
-// Route to update a loan application by ID
-router.put("/:id", updateLoanApplication);
-
-// Route to delete a loan application by ID
-router.delete("/:id", deleteLoanApplication);
+router.put(":id/status", protect, isAdmin, updateLoanStatus);
 
 export default router;
