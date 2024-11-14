@@ -1,13 +1,34 @@
 import Loan from "../models/loan.model.js";
+import Member from "../models/member.model.js";
 
 // Create a new loan application
 export const createLoanApplication = async (req, res) => {
   try {
-    const loan = new Loan(req.body);
-    await loan.save();
-    res.status(201).json(loan);
+    const memberId = req.user.id;
+
+    const newLoan = new Loan({
+      ...req.body,
+      memberId,
+    });
+
+    const savedLoan = await newLoan.save();
+
+    await Member.findByIdAndUpdate(
+      memberId,
+      { $push: { loans: savedLoan._id } },
+      { new: true }
+    );
+
+    res.status(201).json({
+      message: "Loan created and added to member successfully",
+      loan: savedLoan,
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to create loan",
+      error: error.message,
+    });
   }
 };
 
