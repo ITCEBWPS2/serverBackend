@@ -39,11 +39,11 @@ const loanSchema = new mongoose.Schema(
       required: true,
     },
     contactNo: {
-      phoneNumberMobile: {
+      mobile: {
         type: String,
         required: true,
       },
-      phoneNumberLandline: {
+      landline: {
         type: String,
       },
     },
