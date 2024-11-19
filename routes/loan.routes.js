@@ -7,6 +7,7 @@ import {
   updateLoanStatus,
   updateLoanApplication,
   deleteLoanApplication,
+  generateLoanNumber,
 } from "../controllers/loan.controller.js";
 import { isAdmin, protect } from "../middleware/auth.middleware.js";
 
@@ -26,5 +27,7 @@ router
 router.get("/user/:userId", protect, getLoansByUserId);
 
 router.put(":id/status", protect, isAdmin, updateLoanStatus);
+
+router.get("/generate-loan-number", protect, isAdmin, generateLoanNumber);
 
 export default router;

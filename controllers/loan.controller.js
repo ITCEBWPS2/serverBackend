@@ -155,3 +155,26 @@ export const deleteLoanApplication = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// @desc Generate Loan Number
+// @route GET /api/loans/generate-loan-number
+// @access Private (Admin)
+export const generateLoanNumber = async (req, res) => {
+  try {
+    let isUnique = false;
+    let uniqueNumber;
+
+    while (!isUnique) {
+      uniqueNumber = Math.floor(100000 + Math.random() * 900000).toString();
+      const existingLoan = await Loan.findOne({ loanNumber: uniqueNumber });
+      if (!existingLoan) {
+        isUnique = true;
+      }
+    }
+
+    res.status(200).json(uniqueNumber);
+  } catch (error) {
+    console.error("Error generating unique loan number:", error);
+    res.status(500).send({ message: error.message });
+  }
+};
