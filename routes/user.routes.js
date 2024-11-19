@@ -26,6 +26,11 @@ router
   .get(protect, getUserDetails)
   .put(protect, isAdmin, updateUserDetails)
   .delete(protect, isAdmin, deleteUser);
-router.get("/generate-welfare-number", protect, isAdmin, generateWelfareNumber);
+router.get(
+  "/util/generate-welfare-number",
+  protect,
+  isAdmin,
+  generateWelfareNumber
+);
 
 export default router;
