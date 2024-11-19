@@ -222,7 +222,7 @@ export const generateWelfareNumber = async (req, res) => {
     let uniqueNumber;
 
     while (!isUnique) {
-      uniqueNumber = `0${Math.floor(10000 + Math.random() * 90000)}`;
+      uniqueNumber = Math.floor(100000 + Math.random() * 900000).toString();
       const existingMember = await Member.findOne({ welfareNo: uniqueNumber });
       if (!existingMember) {
         isUnique = true;

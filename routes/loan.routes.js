@@ -29,7 +29,7 @@ router.get("/user/:userId", protect, getLoansByUserId);
 
 router.put("/:loanId/status", protect, isAdmin, updateLoanStatus);
 
-router.get("/util/generate-loan-number", protect, isAdmin, generateLoanNumber);
+router.get("/util/generate-loan-number", protect, generateLoanNumber);
 
 router.get("/util/loans-by-status", protect, isAdmin, getAllLoansByStatus);
 
