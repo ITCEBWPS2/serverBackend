@@ -8,6 +8,7 @@ import {
   logoutUser,
   getAllUsers,
   deleteUser,
+  generateWelfareNumber,
 } from "../controllers/user.controller.js";
 import { isAdmin, protect } from "../middleware/auth.middleware.js";
 
@@ -25,5 +26,11 @@ router
   .get(protect, getUserDetails)
   .put(protect, isAdmin, updateUserDetails)
   .delete(protect, isAdmin, deleteUser);
+router.get(
+  "/util/generate-welfare-number",
+  protect,
+  isAdmin,
+  generateWelfareNumber
+);
 
 export default router;

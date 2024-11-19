@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/user.routes.js";
-import loanRoutes from "./routes/loanRoutes.js";
+import loanRoutes from "./routes/loan.routes.js";
 import cors from "cors";
 import ServerlessHttp from "serverless-http";
 

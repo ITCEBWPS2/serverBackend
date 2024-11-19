@@ -110,7 +110,13 @@ const memberSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
-    loans: [String],
+    loans: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Loan",
+        default: [],
+      },
+    ],
     benefits: [String],
   },
   { timestamps: true }

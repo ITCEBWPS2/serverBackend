@@ -1,10 +1,11 @@
 import Member from "../models/member.model.js";
 import generateToken from "../utils/generateToken.js";
+import bcrypt from "bcrypt";
 
 // @desc Auhenticate User
 // @route POST /api/members/auth
 // @access Public (Admin/Member)
-const authUser = async (req, res) => {
+export const authUser = async (req, res) => {
   const { identifier, password } = req.body;
 
   try {
@@ -33,7 +34,7 @@ const authUser = async (req, res) => {
 // @desc Register Member
 // @route POST /api/members
 // @access Private (Admin)
-const registerMember = async (req, res) => {
+export const registerMember = async (req, res) => {
   const {
     name,
     email,
@@ -112,7 +113,7 @@ const registerMember = async (req, res) => {
 // @desc Logout User
 // @route POST /api/members/logout
 // @access Private (Admin/Member)
-const logoutUser = async (req, res) => {
+export const logoutUser = async (req, res) => {
   try {
     res.cookie("jwt", "", {
       httpOnly: true,
@@ -127,7 +128,7 @@ const logoutUser = async (req, res) => {
 // @desc Get User Details
 // @route GET /api/members/:id
 // @access Private (Admin/Member)
-const getUserDetails = async (req, res) => {
+export const getUserDetails = async (req, res) => {
   try {
     const member = await Member.findById(req.params.id);
 
@@ -147,7 +148,7 @@ const getUserDetails = async (req, res) => {
 // @desc Get Logged In User Details
 // @route GET /api/members/me
 // @access Private (Admin/Member)
-const getLoggedInUserDetails = async (req, res) => {
+export const getLoggedInUserDetails = async (req, res) => {
   try {
     const user = req.user;
     if (user) {
@@ -163,7 +164,7 @@ const getLoggedInUserDetails = async (req, res) => {
 // @desc Get All Users
 // @route GET /api/members
 // @access Private (Admin)
-const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     const members = await Member.find();
     res.json(members);
@@ -173,22 +174,25 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// @desc Update User Details
-// @route PUT /api/members/:id
-// @access Private (Admin)
-const updateUserDetails = async (req, res) => {
+export const updateUserDetails = async (req, res) => {
   try {
-    const updatedMember = await Member.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedMember) {
+    // Find the member by ID
+    const member = await Member.findById(req.params.id);
+    if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
 
-    res.status(200).json(updatedMember);
+    // Check if password is being updated
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      req.body.password = await bcrypt.hash(req.body.password, salt);
+    }
+
+    // Update the member with the new details
+    Object.assign(member, req.body);
+    await member.save(); // This triggers the pre("save") middleware if other fields are modified
+
+    res.status(200).json(member);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -197,7 +201,7 @@ const updateUserDetails = async (req, res) => {
 // @desc Delete User
 // @route DELETE /api/members/:id
 // @access Private (Admin)
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
     const user = await Member.findByIdAndDelete(req.params.id);
     if (!user) {
@@ -209,13 +213,25 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export {
-  authUser,
-  registerMember,
-  logoutUser,
-  getUserDetails,
-  getLoggedInUserDetails,
-  updateUserDetails,
-  getAllUsers,
-  deleteUser,
+// @desc Generate Welfare Number
+// @route GET /api/members/util/generate-welfare-number
+// @access Private (Admin)
+export const generateWelfareNumber = async (req, res) => {
+  try {
+    let isUnique = false;
+    let uniqueNumber;
+
+    while (!isUnique) {
+      uniqueNumber = Math.floor(100000 + Math.random() * 900000).toString();
+      const existingMember = await Member.findOne({ welfareNo: uniqueNumber });
+      if (!existingMember) {
+        isUnique = true;
+      }
+    }
+
+    res.status(200).json(uniqueNumber);
+  } catch (error) {
+    console.error("Error generating unique welfare number:", error);
+    res.status(500).send({ message: error.message });
+  }
 };
