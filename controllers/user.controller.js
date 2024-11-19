@@ -174,27 +174,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// @desc Update User Details
-// @route PUT /api/members/:id
-// @access Private (Admin)
-// const updateUserDetails = async (req, res) => {
-//   try {
-//     const updatedMember = await Member.findByIdAndUpdate(
-//       req.params.id,
-//       req.body,
-//       { new: true, runValidators: true }
-//     );
-
-//     if (!updatedMember) {
-//       return res.status(404).json({ message: "Member not found" });
-//     }
-
-//     res.status(200).json(updatedMember);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
 export const updateUserDetails = async (req, res) => {
   try {
     // Find the member by ID
@@ -230,6 +209,29 @@ export const deleteUser = async (req, res) => {
     }
     res.send({ message: "User deleted successfully" });
   } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+// @desc Generate Welfare Number
+// @route GET /api/members/generate-welfare-number
+// @access Private (Admin)
+export const generateWelfareNumber = async (req, res) => {
+  try {
+    let isUnique = false;
+    let uniqueNumber;
+
+    while (!isUnique) {
+      uniqueNumber = `0${Math.floor(10000 + Math.random() * 90000)}`;
+      const existingMember = await Member.findOne({ welfareNo: uniqueNumber });
+      if (!existingMember) {
+        isUnique = true;
+      }
+    }
+
+    res.status(200).json(uniqueNumber);
+  } catch (error) {
+    console.error("Error generating unique welfare number:", error);
     res.status(500).send({ message: error.message });
   }
 };
