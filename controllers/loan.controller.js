@@ -72,6 +72,27 @@ export const viewAllLoanApplications = async (req, res) => {
   }
 };
 
+// @desc Get All Loan Applications by Status
+// @route GET /api/loans/util/loans-by-status
+// @access Private (Admin)
+export const getAllLoansByStatus = async (req, res) => {
+  try {
+    const { status } = req.query;
+
+    let filter = {};
+    if (status && status !== "all") {
+      filter.loanStatus = status;
+    }
+
+    const loans = await Loan.find(filter);
+    res.status(200).json(loans);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching loans", error: error.message });
+  }
+};
+
 // @desc View Single Loan Application
 // @route GET /api/loans/:id
 // @access Private (Admin/Member)
