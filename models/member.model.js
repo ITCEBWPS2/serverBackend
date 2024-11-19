@@ -113,7 +113,7 @@ const memberSchema = mongoose.Schema(
     loans: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "loan",
+        ref: "Loan",
         default: [],
       },
     ],
