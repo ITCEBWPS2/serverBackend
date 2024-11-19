@@ -157,7 +157,7 @@ export const deleteLoanApplication = async (req, res) => {
 };
 
 // @desc Generate Loan Number
-// @route GET /api/loans/generate-loan-number
+// @route GET /api/loans/util/generate-loan-number
 // @access Private (Admin)
 export const generateLoanNumber = async (req, res) => {
   try {

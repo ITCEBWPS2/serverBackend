@@ -214,7 +214,7 @@ export const deleteUser = async (req, res) => {
 };
 
 // @desc Generate Welfare Number
-// @route GET /api/members/generate-welfare-number
+// @route GET /api/members/util/generate-welfare-number
 // @access Private (Admin)
 export const generateWelfareNumber = async (req, res) => {
   try {

@@ -26,7 +26,7 @@ router
 
 router.get("/user/:userId", protect, getLoansByUserId);
 
-router.put("/:id/status", protect, isAdmin, updateLoanStatus);
+router.put("/:loanId/status", protect, isAdmin, updateLoanStatus);
 
 router.get("/util/generate-loan-number", protect, isAdmin, generateLoanNumber);
 
