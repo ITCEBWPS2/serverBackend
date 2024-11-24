@@ -117,7 +117,7 @@ const memberSchema = mongoose.Schema(
         default: [],
       },
     ],
-    benefits: [String],
+    benefits: [],
   },
   { timestamps: true }
 );
