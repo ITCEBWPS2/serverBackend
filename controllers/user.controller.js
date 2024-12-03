@@ -65,7 +65,8 @@ export const registerMember = async (req, res) => {
 
   try {
     const userExists = await Member.findOne({
-      $or: [{ email }, { epf }, { welfareNo }],
+      $or: [{ epf }, { welfareNo }],
+      //[{ email }, { epf }, { welfareNo }],
     });
 
     if (userExists) {
