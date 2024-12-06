@@ -5,6 +5,7 @@ import { notFound, errorHandler } from "./middleware/error.middleware.js";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/user.routes.js";
 import loanRoutes from "./routes/loan.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 import cors from "cors";
 import ServerlessHttp from "serverless-http";
 
@@ -52,6 +53,7 @@ app.use(
 
 app.use("/api/members", userRoutes);
 app.use("/api/loans", loanRoutes);
+app.use("/api/admins", adminRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
