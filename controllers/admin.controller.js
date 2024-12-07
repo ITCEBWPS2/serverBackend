@@ -1,4 +1,4 @@
-import Admin from "../models/admin.model";
+import Admin from "../models/admin.model.js";
 import generateToken from "../utils/generateToken.js";
 import bcrypt from "bcrypt";
 
@@ -28,5 +28,36 @@ export const authAdmin = async (req, res) => {
   } catch (error) {
     console.log("authAdmin", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc Register Admin
+// @route POST /api/admins
+// @access Private (Admin)
+export const registerAdmin = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const adminExists = await Admin.findOne({
+      email,
+    });
+
+    if (adminExists) {
+      res.status(400);
+      throw new Error("User already exists");
+    }
+
+    const newAdmin = new Admin({
+      name,
+      email,
+      password,
+    });
+
+    await newAdmin.save();
+
+    res.status(201).json({ data: { user: newAdmin } });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: error.message });
   }
 };
