@@ -117,7 +117,18 @@ const memberSchema = mongoose.Schema(
         default: [],
       },
     ],
-    benefits: [],
+    benefits: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "DeathFund",
+        default: [],
+      },
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Scholarship",
+        default: [],
+      },
+    ],
   },
   { timestamps: true }
 );
