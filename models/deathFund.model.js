@@ -14,6 +14,14 @@ const deathFundSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    amount: {
+      type: String,
+      required: trusted,
+    },
+    date: {
+      type: Date,
+      required: true,
+    },
     additionalNotes: {
       type: String,
     },
