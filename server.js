@@ -8,6 +8,7 @@ import loanRoutes from "./routes/loan.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import emailRoutes from "./routes/email.routes.js";
 import deathFundRoutes from "./routes/deathFund.routes.js";
+import scholarshipRoutes from "./routes/scholarship.routes.js";
 import cors from "cors";
 import ServerlessHttp from "serverless-http";
 
@@ -58,6 +59,7 @@ app.use("/api/loans", loanRoutes);
 app.use("/api/admins", adminRoutes);
 app.use("/api", emailRoutes);
 app.use("/api/deathfunds", deathFundRoutes);
+app.use("/api/scholarships", scholarshipRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

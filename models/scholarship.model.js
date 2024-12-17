@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const scholarshipSchema = new mongoose.Schema(
   {
+    benefit: {
+      type: String,
+      required: true,
+    },
     memberId: {
       type: String,
       required: true,

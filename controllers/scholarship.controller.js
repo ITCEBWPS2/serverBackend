@@ -1,22 +1,19 @@
-import DeathFund from "../models/deathFund.model.js";
+import Scholarship from "../models/scholarship.model.js";
 import Member from "../models/member.model.js";
 
-// @desc Create a Death Fund
-// @route POST /api/deathfunds
+// @desc Create a Scholarship
+// @route POST /api/scholarship
 // @access Private (Admin/Member)
-export const createDeathFund = async (req, res) => {
+export const createScholarship = async (req, res) => {
   try {
-    const { memberId, epfNumber, personType, amount, date, additionalNotes } =
-      req.body;
+    const { memberId, epfNumber, indexNumber, amount } = req.body;
 
-    const newBenefit = new DeathFund({
-      benefit: "deathfund",
+    const newBenefit = new Scholarship({
+      benefit: "scholarship",
       memberId,
       epfNumber,
-      personType,
+      indexNumber,
       amount,
-      date,
-      additionalNotes,
     });
 
     const savedBenefit = await newBenefit.save();
@@ -28,13 +25,13 @@ export const createDeathFund = async (req, res) => {
     );
 
     res.status(201).json({
-      message: "Fund created and added to member successfully",
+      message: "Scholarship created and added to member successfully",
       benefit: savedBenefit,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Failed to create fund",
+      message: "Failed to create Scholarship.",
       error: error.message,
     });
   }
