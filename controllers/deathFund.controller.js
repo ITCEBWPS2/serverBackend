@@ -10,6 +10,7 @@ export const createDeathFund = async (req, res) => {
       req.body;
 
     const newFund = new DeathFund({
+      benefit: "deathfund",
       memberId,
       epfNumber,
       personType,

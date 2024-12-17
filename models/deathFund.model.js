@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const deathFundSchema = new mongoose.Schema(
   {
+    benefit: {
+      type: String,
+      required: true,
+    },
     memberId: {
       type: String,
       required: true,
@@ -16,7 +20,7 @@ const deathFundSchema = new mongoose.Schema(
     },
     amount: {
       type: String,
-      required: trusted,
+      required: true,
     },
     date: {
       type: Date,
