@@ -39,3 +39,63 @@ export const createDeathFund = async (req, res) => {
     });
   }
 };
+
+// @desc View All Death Funds
+// @route GET /api/deathfunds
+// @access Private (Admin)
+export const viewAllDeathFunds = async (req, res) => {
+  try {
+    const benefits = await DeathFund.find();
+    res.status(200).json(benefits);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// @desc View Single Death Fund
+// @route GET /api/deathfunds/:id
+// @access Private (Admin/Member)
+export const viewSingleDeathFund = async (req, res) => {
+  try {
+    const benefit = await DeathFund.findById(req.params.id);
+    if (!benefit) {
+      return res.status(404).json({ error: "Death fund not found..!" });
+    }
+    res.status(200).json(benefit);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// @desc Update Death Fund
+// @route PUT /api/deathfunds/:id
+// @access Private (Admin)
+export const updateDeathFund = async (req, res) => {
+  try {
+    const benefit = await DeathFund.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!benefit) {
+      return res.status(404).json({ error: "Death fund not found !" });
+    }
+    res.status(200).json(benefit);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// @desc Delete Death Fund
+// @route DELETE /api/deathfunds/:id
+// @access Private (Admin)
+export const deleteDeathFund = async (req, res) => {
+  try {
+    const benefit = await DeathFund.findByIdAndDelete(req.params.id);
+    if (!benefit) {
+      return res.status(404).json({ error: "Death fund not found" });
+    }
+    res.status(200).json({ message: "Death fund deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
