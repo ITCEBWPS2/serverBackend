@@ -236,3 +236,29 @@ export const generateWelfareNumber = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
+
+// @desc Get Benefits by User ID
+// @route GET /api/benefits/:userId
+// @access Private (Admin/Member)
+export const getBenefitsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const member = await Member.findById(userId).populate("benefits");
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    res.status(200).json({
+      message: "Benefits retrieved successfully",
+      benefits: member.benefits,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to retrieve benefits.",
+      error: error.message,
+    });
+  }
+};

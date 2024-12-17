@@ -9,6 +9,7 @@ import {
   getAllUsers,
   deleteUser,
   generateWelfareNumber,
+  getBenefitsByUserId,
 } from "../controllers/user.controller.js";
 import { isAdmin, protect } from "../middleware/auth.middleware.js";
 
@@ -32,5 +33,6 @@ router.get(
   isAdmin,
   generateWelfareNumber
 );
+router.get("/benefits/:userId", protect, getBenefitsByUserId);
 
 export default router;
