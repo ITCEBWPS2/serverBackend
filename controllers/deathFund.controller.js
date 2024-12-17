@@ -72,14 +72,18 @@ export const viewSingleDeathFund = async (req, res) => {
 // @access Private (Admin)
 export const updateDeathFund = async (req, res) => {
   try {
-    const benefit = await DeathFund.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!benefit) {
+    const updatedBenefit = await DeathFund.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    if (!updatedBenefit) {
       return res.status(404).json({ error: "Death fund not found !" });
     }
-    res.status(200).json(benefit);
+    res.status(200).json(updatedBenefit);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -94,7 +98,17 @@ export const deleteDeathFund = async (req, res) => {
     if (!benefit) {
       return res.status(404).json({ error: "Death fund not found" });
     }
-    res.status(200).json({ message: "Death fund deleted successfully" });
+
+    await Member.findByIdAndUpdate(
+      benefit.memberId,
+      { $pull: { benefits: req.params.id } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message:
+        "Death fund deleted successfully and removed from member benefits",
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

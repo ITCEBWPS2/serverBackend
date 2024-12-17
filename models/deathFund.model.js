@@ -7,7 +7,8 @@ const deathFundSchema = new mongoose.Schema(
       required: true,
     },
     memberId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Member",
       required: true,
     },
     epfNumber: {
