@@ -11,10 +11,6 @@ const scholarshipSchema = new mongoose.Schema(
       ref: "Member",
       required: true,
     },
-    epfNumber: {
-      type: String,
-      required: true,
-    },
     indexNumber: {
       type: String,
     },

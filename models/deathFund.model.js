@@ -11,10 +11,6 @@ const deathFundSchema = new mongoose.Schema(
       ref: "Member",
       required: true,
     },
-    epfNumber: {
-      type: String,
-      required: true,
-    },
     personType: {
       type: String,
       required: true,

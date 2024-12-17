@@ -21,11 +21,17 @@ export const createDeathFund = async (req, res) => {
 
     const savedBenefit = await newBenefit.save();
 
-    await Member.findByIdAndUpdate(
+    const updatedMember = await Member.findByIdAndUpdate(
       memberId,
-      { $push: { benefits: savedBenefit._id } },
+      { $push: { deathFunds: savedBenefit._id } },
       { new: true }
     );
+
+    if (!updatedMember) {
+      return res.status(404).json({
+        message: "Member not found with the provided epf Number",
+      });
+    }
 
     res.status(201).json({
       message: "Fund created and added to member successfully",
@@ -101,7 +107,7 @@ export const deleteDeathFund = async (req, res) => {
 
     await Member.findByIdAndUpdate(
       benefit.memberId,
-      { $pull: { benefits: req.params.id } },
+      { $pull: { deathFunds: req.params.id } },
       { new: true }
     );
 

@@ -117,12 +117,14 @@ const memberSchema = mongoose.Schema(
         default: [],
       },
     ],
-    benefits: [
+    deathFunds: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "DeathFund",
         default: [],
       },
+    ],
+    scholarships: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Scholarship",
