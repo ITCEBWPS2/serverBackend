@@ -1,4 +1,5 @@
 import Member from "../models/member.model.js";
+import Admin from "../models/admin.model.js";
 import generateToken from "../utils/generateToken.js";
 import bcrypt from "bcrypt";
 
