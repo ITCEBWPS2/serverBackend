@@ -119,3 +119,29 @@ export const deleteDeathFund = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// @desc Get Death Funds by User ID
+// @route GET /api/deathfunds/benefits/:userId
+// @access Private (Admin/Member)
+export const getBenefitsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const member = await Member.findById(userId).populate("deathFunds");
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    res.status(200).json({
+      message: "Benefits retrieved successfully",
+      benefits: member.deathFunds,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to retrieve benefits.",
+      error: error.message,
+    });
+  }
+};
