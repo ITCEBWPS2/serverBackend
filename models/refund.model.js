@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const scholarshipSchema = new mongoose.Schema(
+const refundSchema = new mongoose.Schema(
   {
     benefit: {
       type: String,
@@ -25,6 +25,6 @@ const scholarshipSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Scholarship = mongoose.model("Scholarship", scholarshipSchema);
+const Refund = mongoose.model("Refund", refundSchema);
 
-export default Scholarship;
+export default Refund;

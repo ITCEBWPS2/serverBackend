@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const scholarshipSchema = new mongoose.Schema(
+const retirementSchema = new mongoose.Schema(
   {
     benefit: {
       type: String,
@@ -23,6 +23,6 @@ const scholarshipSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Scholarship = mongoose.model("Scholarship", scholarshipSchema);
+const Retirement = mongoose.model("Retirement", retirementSchema);
 
-export default Scholarship;
+export default Retirement;

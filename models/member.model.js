@@ -131,6 +131,27 @@ const memberSchema = mongoose.Schema(
         default: [],
       },
     ],
+    refunds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Refund",
+        default: [],
+      },
+    ],
+    medicals: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Medical",
+        default: [],
+      },
+    ],
+    retirements: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Retirement",
+        default: [],
+      },
+    ],
   },
   { timestamps: true }
 );
