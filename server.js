@@ -10,6 +10,7 @@ import emailRoutes from "./routes/email.routes.js";
 import deathFundRoutes from "./routes/deathFund.routes.js";
 import scholarshipRoutes from "./routes/scholarship.routes.js";
 import medicalRoutes from "./routes/medical.routes.js";
+import refundRoutes from "./routes/refund.routes.js";
 import cors from "cors";
 import ServerlessHttp from "serverless-http";
 
@@ -62,6 +63,7 @@ app.use("/api", emailRoutes);
 app.use("/api/deathfunds", deathFundRoutes);
 app.use("/api/scholarships", scholarshipRoutes);
 app.use("/api/medicals", medicalRoutes);
+app.use("/api/refunds", refundRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
