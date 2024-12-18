@@ -14,7 +14,7 @@ const memberSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     epf: {
       type: String,
@@ -45,15 +45,15 @@ const memberSchema = mongoose.Schema(
     },
     division: {
       type: String,
-      required: true,
+      required: false,
     },
     branch: {
       type: String,
-      required: true,
+      required: false,
     },
     unit: {
       type: String,
-      required: true,
+      required: false,
     },
     contactNo: {
       whatsappNo: {
