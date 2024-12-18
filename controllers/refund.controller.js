@@ -1,61 +1,62 @@
-import Scholarship from "../models/scholarship.model.js";
+import Refund from "../models/refund.model.js";
 import Member from "../models/member.model.js";
 
-// @desc Create a Scholarship
-// @route POST /api/scholarship
+// @desc Create a Refund
+// @route POST /api/refunds
 // @access Private (Admin/Member)
-export const createScholarship = async (req, res) => {
+export const createRefund = async (req, res) => {
   try {
-    const { memberId, indexNumber, amount } = req.body;
+    const { memberId, amount, reason, message } = req.body;
 
-    const newBenefit = new Scholarship({
-      benefit: "scholarship",
+    const newBenefit = new Refund({
+      benefit: "refund",
       memberId,
-      indexNumber,
       amount,
+      reason,
+      message,
     });
 
     const savedBenefit = await newBenefit.save();
 
     await Member.findByIdAndUpdate(
       memberId,
-      { $push: { benefits: savedBenefit._id } },
+      { $push: { refunds: savedBenefit._id } },
       { new: true }
     );
 
     res.status(201).json({
-      message: "Scholarship created and added to member successfully",
+      message: "Refund created and added to member successfully",
       benefit: savedBenefit,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Failed to create Scholarship.",
+      message: "Failed to create Refund.",
       error: error.message,
     });
   }
 };
 
-// @desc View All Scholarships
-// @route GET /api/scholarships
+// @desc View All Refunds
+// @route GET /api/refunds
 // @access Private (Admin)
-export const viewAllScholarships = async (req, res) => {
+export const viewAllRefunds = async (req, res) => {
   try {
-    const benefits = await Scholarship.find();
+    const benefits = await Refund.find();
     res.status(200).json(benefits);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// @desc View Single Scholarship
-// @route GET /api/scholarships/:id
+// @desc View Single Refund
+// @route GET /api/refunds/:id
 // @access Private (Admin/Member)
-export const viewSingleScholarship = async (req, res) => {
+export const viewSingleRefund = async (req, res) => {
   try {
-    const benefit = await Scholarship.findById(req.params.id);
+    const benefit = await Refund.findById(req.params.id);
     if (!benefit) {
-      return res.status(404).json({ error: "Scholarship not found..!" });
+      return res.status(404).json({ error: "Refund not found..!" });
     }
     res.status(200).json(benefit);
   } catch (error) {
@@ -63,12 +64,12 @@ export const viewSingleScholarship = async (req, res) => {
   }
 };
 
-// @desc Update Scholarship
-// @route PUT /api/scholarships/:id
+// @desc Update Refund
+// @route PUT /api/refunds/:id
 // @access Private (Admin)
-export const updateScholarship = async (req, res) => {
+export const updateRefund = async (req, res) => {
   try {
-    const updatedBenefit = await Scholarship.findByIdAndUpdate(
+    const updatedBenefit = await Refund.findByIdAndUpdate(
       req.params.id,
       req.body,
       {
@@ -77,7 +78,7 @@ export const updateScholarship = async (req, res) => {
       }
     );
     if (!updatedBenefit) {
-      return res.status(404).json({ error: "Scholarship not found !" });
+      return res.status(404).json({ error: "Refund not found !" });
     }
     res.status(200).json(updatedBenefit);
   } catch (error) {
@@ -85,39 +86,38 @@ export const updateScholarship = async (req, res) => {
   }
 };
 
-// @desc Delete Scholarship
-// @route DELETE /api/scholarships/:id
+// @desc Delete Refund
+// @route DELETE /api/refunds/:id
 // @access Private (Admin)
-export const deleteScholarship = async (req, res) => {
+export const deleteRefund = async (req, res) => {
   try {
-    const benefit = await Scholarship.findByIdAndDelete(req.params.id);
+    const benefit = await Refund.findByIdAndDelete(req.params.id);
     if (!benefit) {
-      return res.status(404).json({ error: "Scholarship not found" });
+      return res.status(404).json({ error: "Refund not found" });
     }
 
     await Member.findByIdAndUpdate(
       benefit.memberId,
-      { $pull: { scholarships: req.params.id } },
+      { $pull: { refunds: req.params.id } },
       { new: true }
     );
 
     res.status(200).json({
-      message:
-        "Scholarship deleted successfully and removed from member benefits",
+      message: "Refund deleted successfully and removed from member benefits",
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// @desc Get Scholarships by User ID
-// @route GET /api/scholarships/benefits/:userId
+// @desc Get Refunds by User ID
+// @route GET /api/refunds/benefits/:userId
 // @access Private (Admin/Member)
 export const getBenefitsByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const member = await Member.findById(userId).populate("scholarships");
+    const member = await Member.findById(userId).populate("refunds");
 
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
@@ -125,7 +125,7 @@ export const getBenefitsByUserId = async (req, res) => {
 
     res.status(200).json({
       message: "Benefits retrieved successfully",
-      benefits: member.scholarships,
+      benefits: member.refunds,
     });
   } catch (error) {
     console.error(error);
