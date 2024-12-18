@@ -11,7 +11,6 @@ import { isAdmin, protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", protect, isAdmin, createDeathFund);
 router
   .route("/")
   .post(protect, isAdmin, createDeathFund)
