@@ -1,69 +1,67 @@
-import DeathFund from "../models/deathFund.model.js";
+import Medical from "../models/medical.model.js";
 import Member from "../models/member.model.js";
 
-// @desc Create a Death Fund
-// @route POST /api/deathfunds
+// @desc Create a Medical
+// @route POST /api/medicals
 // @access Private (Admin/Member)
-export const createDeathFund = async (req, res) => {
+export const createMedical = async (req, res) => {
   try {
-    const { memberId, personType, amount, date, additionalNotes } = req.body;
+    const { memberId, date, reason } = req.body;
 
-    const newBenefit = new DeathFund({
-      benefit: "deathfund",
+    const newBenefit = new Medical({
+      benefit: "medical",
       memberId,
-      personType,
-      amount,
       date,
-      additionalNotes,
+      reason,
     });
 
     const savedBenefit = await newBenefit.save();
 
     const updatedMember = await Member.findByIdAndUpdate(
       memberId,
-      { $push: { deathFunds: savedBenefit._id } },
+      { $push: { medicals: savedBenefit._id } },
       { new: true }
     );
 
     if (!updatedMember) {
       return res.status(404).json({
-        message: "Member not found with the provided epf Number",
+        message: "Member not found with the provided ID",
       });
     }
 
     res.status(201).json({
-      message: "Fund created and added to member successfully",
+      message: "Medical created and added to member successfully",
       benefit: savedBenefit,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Failed to create fund",
+      message: "Failed to create medical",
       error: error.message,
     });
   }
 };
 
-// @desc View All Death Funds
-// @route GET /api/deathfunds
+// @desc View All Medicals
+// @route GET /api/medicals
 // @access Private (Admin)
-export const viewAllDeathFunds = async (req, res) => {
+export const viewAllMedicals = async (req, res) => {
   try {
-    const benefits = await DeathFund.find();
+    const benefits = await Medical.find();
     res.status(200).json(benefits);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// @desc View Single Death Fund
-// @route GET /api/deathfunds/:id
+// @desc View Single Medical
+// @route GET /api/medicals/:id
 // @access Private (Admin/Member)
-export const viewSingleDeathFund = async (req, res) => {
+export const viewSingleMedical = async (req, res) => {
   try {
-    const benefit = await DeathFund.findById(req.params.id);
+    const benefit = await Medical.findById(req.params.id);
     if (!benefit) {
-      return res.status(404).json({ error: "Death fund not found..!" });
+      return res.status(404).json({ error: "Medical not found..!" });
     }
     res.status(200).json(benefit);
   } catch (error) {
@@ -71,12 +69,12 @@ export const viewSingleDeathFund = async (req, res) => {
   }
 };
 
-// @desc Update Death Fund
-// @route PUT /api/deathfunds/:id
+// @desc Update Medical
+// @route PUT /api/medicals/:id
 // @access Private (Admin)
-export const updateDeathFund = async (req, res) => {
+export const updateMedical = async (req, res) => {
   try {
-    const updatedBenefit = await DeathFund.findByIdAndUpdate(
+    const updatedBenefit = await Medical.findByIdAndUpdate(
       req.params.id,
       req.body,
       {
@@ -85,7 +83,7 @@ export const updateDeathFund = async (req, res) => {
       }
     );
     if (!updatedBenefit) {
-      return res.status(404).json({ error: "Death fund not found !" });
+      return res.status(404).json({ error: "Medical not found !" });
     }
     res.status(200).json(updatedBenefit);
   } catch (error) {
@@ -93,39 +91,38 @@ export const updateDeathFund = async (req, res) => {
   }
 };
 
-// @desc Delete Death Fund
-// @route DELETE /api/deathfunds/:id
+// @desc Delete Medical
+// @route DELETE /api/medicals/:id
 // @access Private (Admin)
-export const deleteDeathFund = async (req, res) => {
+export const deleteMedical = async (req, res) => {
   try {
-    const benefit = await DeathFund.findByIdAndDelete(req.params.id);
+    const benefit = await Medical.findByIdAndDelete(req.params.id);
     if (!benefit) {
-      return res.status(404).json({ error: "Death fund not found" });
+      return res.status(404).json({ error: "Medical not found" });
     }
 
     await Member.findByIdAndUpdate(
       benefit.memberId,
-      { $pull: { deathFunds: req.params.id } },
+      { $pull: { medicals: req.params.id } },
       { new: true }
     );
 
     res.status(200).json({
-      message:
-        "Death fund deleted successfully and removed from member benefits",
+      message: "Medical deleted successfully and removed from member benefits",
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-// @desc Get Death Funds by User ID
-// @route GET /api/deathfunds/benefits/:userId
+// @desc Get Medicals by User ID
+// @route GET /api/medicals/benefits/:userId
 // @access Private (Admin/Member)
 export const getBenefitsByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const member = await Member.findById(userId).populate("deathFunds");
+    const member = await Member.findById(userId).populate("medicals");
 
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
@@ -133,7 +130,7 @@ export const getBenefitsByUserId = async (req, res) => {
 
     res.status(200).json({
       message: "Benefits retrieved successfully",
-      benefits: member.deathFunds,
+      benefits: member.medicals,
     });
   } catch (error) {
     console.error(error);
