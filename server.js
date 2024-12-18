@@ -11,6 +11,7 @@ import deathFundRoutes from "./routes/deathFund.routes.js";
 import scholarshipRoutes from "./routes/scholarship.routes.js";
 import medicalRoutes from "./routes/medical.routes.js";
 import refundRoutes from "./routes/refund.routes.js";
+import retirementRoutes from "./routes/retirement.routes.js";
 import cors from "cors";
 import ServerlessHttp from "serverless-http";
 
@@ -64,6 +65,7 @@ app.use("/api/deathfunds", deathFundRoutes);
 app.use("/api/scholarships", scholarshipRoutes);
 app.use("/api/medicals", medicalRoutes);
 app.use("/api/refunds", refundRoutes);
+app.use("/api/retirements", retirementRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
