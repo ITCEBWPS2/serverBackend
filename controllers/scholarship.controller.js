@@ -19,7 +19,7 @@ export const createScholarship = async (req, res) => {
 
     await Member.findByIdAndUpdate(
       memberId,
-      { $push: { benefits: savedBenefit._id } },
+      { $push: { scholarships: savedBenefit._id } },
       { new: true }
     );
 

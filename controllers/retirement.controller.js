@@ -125,7 +125,7 @@ export const getBenefitsByUserId = async (req, res) => {
 
     res.status(200).json({
       message: "Benefits retrieved successfully",
-      benefits: member.refunds,
+      benefits: member.retirements,
     });
   } catch (error) {
     console.error(error);
