@@ -7,20 +7,24 @@ import {
   getBenefitsByUserId,
   viewSingleScholarship,
 } from "../controllers/scholarship.controller.js";
-import { isAdmin, protect } from "../middleware/auth.middleware.js";
+import {
+  isSuperAdmin,
+  isTreasurerOrAssistantTreasurer,
+  protect,
+} from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
 router
   .route("/")
-  .post(protect, isAdmin, createScholarship)
-  .get(protect, isAdmin, viewAllScholarships);
+  .post(protect, isTreasurerOrAssistantTreasurer, createScholarship)
+  .get(protect, viewAllScholarships);
 
 router
   .route("/:id")
   .get(protect, viewSingleScholarship)
-  .put(protect, isAdmin, updateScholarship)
-  .delete(protect, isAdmin, deleteScholarship);
+  .put(protect, isTreasurerOrAssistantTreasurer, updateScholarship)
+  .delete(protect, isSuperAdmin, deleteScholarship);
 
 router.get("/benefits/:userId", protect, getBenefitsByUserId);
 

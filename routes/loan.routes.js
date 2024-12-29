@@ -11,7 +11,6 @@ import {
   getAllLoansByStatus,
 } from "../controllers/loan.controller.js";
 import {
-  isAdmin,
   isSuperAdmin,
   isTreasurerOrAssistantTreasurer,
   protect,
