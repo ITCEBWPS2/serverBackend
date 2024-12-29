@@ -46,7 +46,7 @@ const memberSchema = mongoose.Schema(
         "assistant_secretory",
         "treasurer",
         "assistant_treasurer",
-        "superadmin",
+        "super_admin",
       ],
     },
     payroll: {
