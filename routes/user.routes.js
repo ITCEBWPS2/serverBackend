@@ -10,7 +10,11 @@ import {
   deleteUser,
   generateWelfareNumber,
 } from "../controllers/user.controller.js";
-import { isAdmin, protect } from "../middleware/auth.middleware.js";
+import {
+  isSecretoryOrAssistantSecretory,
+  isSuperAdmin,
+  protect,
+} from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -19,17 +23,17 @@ router.post("/logout", logoutUser);
 router.get("/me", protect, getLoggedInUserDetails);
 router
   .route("/")
-  .get(protect, isAdmin, getAllUsers)
-  .post(protect, isAdmin, registerMember);
+  .get(protect, getAllUsers)
+  .post(protect, isSecretoryOrAssistantSecretory, registerMember);
 router
   .route("/:id")
   .get(protect, getUserDetails)
-  .put(protect, isAdmin, updateUserDetails)
-  .delete(protect, isAdmin, deleteUser);
+  .put(protect, isSecretoryOrAssistantSecretory, updateUserDetails)
+  .delete(protect, isSuperAdmin, deleteUser);
 router.get(
   "/util/generate-welfare-number",
   protect,
-  isAdmin,
+  isSecretoryOrAssistantSecretory,
   generateWelfareNumber
 );
 

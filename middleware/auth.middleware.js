@@ -48,13 +48,17 @@ export const isAdminOrMember = (req, res, next) => {
 export const isPresidentOrVicePresident = (req, res, next) => {
   if (
     req.user &&
-    (req.user.role === "president" || req.user.role === "vice_president")
+    (req.user.role === "president" ||
+      req.user.role === "vice_president" ||
+      req.user.role === "super_admin")
   ) {
     next();
   } else {
     res
       .status(403)
-      .json({ message: "Not authorized as an President or Vice President" });
+      .json({
+        message: "Not authorized as a President, Vice President or Super Admin",
+      });
   }
 };
 
@@ -62,12 +66,15 @@ export const isPresidentOrVicePresident = (req, res, next) => {
 export const isSecretoryOrAssistantSecretory = (req, res, next) => {
   if (
     req.user &&
-    (req.user.role === "secretory" || req.user.role === "assistant_secretory")
+    (req.user.role === "secretory" ||
+      req.user.role === "assistant_secretory" ||
+      req.user.role === "super_admin")
   ) {
     next();
   } else {
     res.status(403).json({
-      message: "Not authorized as an Secretory or Assistant Secretory",
+      message:
+        "Not authorized as a Secretory, Assistant Secretory or Super Admin",
     });
   }
 };
@@ -76,12 +83,15 @@ export const isSecretoryOrAssistantSecretory = (req, res, next) => {
 export const isTreasurerOrAssistantTreasurer = (req, res, next) => {
   if (
     req.user &&
-    (req.user.role === "treasurer" || req.user.role === "assistant_treasurer")
+    (req.user.role === "treasurer" ||
+      req.user.role === "assistant_treasurer" ||
+      req.user.role === "super_admin")
   ) {
     next();
   } else {
     res.status(403).json({
-      message: "Not authorized as an Treasurer or Assistant Treasurer",
+      message:
+        "Not authorized as a Treasurer, Assistant Treasurer or Super Admin",
     });
   }
 };
@@ -91,6 +101,6 @@ export const isSuperAdmin = (req, res, next) => {
   if (req.user && req.user.role === "super_admin") {
     next();
   } else {
-    res.status(403).json({ message: "Not authorized as an Super Admin" });
+    res.status(403).json({ message: "Not authorized as a Super Admin" });
   }
 };
