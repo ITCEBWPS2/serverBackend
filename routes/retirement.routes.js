@@ -7,20 +7,25 @@ import {
   getBenefitsByUserId,
   viewSingleRetirement,
 } from "../controllers/retirement.controller.js";
-import { isAdmin, protect } from "../middleware/auth.middleware.js";
+import {
+  isAdmin,
+  isSuperAdmin,
+  isTreasurerOrAssistantTreasurer,
+  protect,
+} from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
 router
   .route("/")
-  .post(protect, isAdmin, createRetirement)
-  .get(protect, isAdmin, viewAllRetirements);
+  .post(protect, isTreasurerOrAssistantTreasurer, createRetirement)
+  .get(protect, viewAllRetirements);
 
 router
   .route("/:id")
   .get(protect, viewSingleRetirement)
-  .put(protect, isAdmin, updateRetirement)
-  .delete(protect, isAdmin, deleteRetirement);
+  .put(protect, isTreasurerOrAssistantTreasurer, updateRetirement)
+  .delete(protect, isSuperAdmin, deleteRetirement);
 
 router.get("/benefits/:userId", protect, getBenefitsByUserId);
 

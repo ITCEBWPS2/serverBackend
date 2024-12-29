@@ -37,7 +37,17 @@ const memberSchema = mongoose.Schema(
     role: {
       type: String,
       required: true,
-      enum: ["admin", "member"],
+      enum: [
+        "admin",
+        "member",
+        "president",
+        "vice_president",
+        "secretary",
+        "assistant_secretary",
+        "treasurer",
+        "assistant_treasurer",
+        "super_admin",
+      ],
     },
     payroll: {
       type: String,

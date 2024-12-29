@@ -10,27 +10,41 @@ import {
   generateLoanNumber,
   getAllLoansByStatus,
 } from "../controllers/loan.controller.js";
-import { isAdmin, protect } from "../middleware/auth.middleware.js";
+import {
+  isSuperAdmin,
+  isTreasurerOrAssistantTreasurer,
+  protect,
+} from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
 router
   .route("/")
-  .post(protect, createLoanApplication)
-  .get(protect, isAdmin, viewAllLoanApplications);
+  .post(protect, isTreasurerOrAssistantTreasurer, createLoanApplication)
+  .get(protect, viewAllLoanApplications);
 
 router
   .route("/:id")
   .get(protect, viewSingleLoanApplication)
-  .put(protect, isAdmin, updateLoanApplication)
-  .delete(protect, isAdmin, deleteLoanApplication);
+  .put(protect, isTreasurerOrAssistantTreasurer, updateLoanApplication)
+  .delete(protect, isSuperAdmin, deleteLoanApplication);
 
 router.get("/user/:userId", protect, getLoansByUserId);
 
-router.put("/:loanId/status", protect, isAdmin, updateLoanStatus);
+router.put(
+  "/:loanId/status",
+  protect,
+  isTreasurerOrAssistantTreasurer,
+  updateLoanStatus
+);
 
-router.get("/util/generate-loan-number", protect, generateLoanNumber);
+router.get(
+  "/util/generate-loan-number",
+  protect,
+  isTreasurerOrAssistantTreasurer,
+  generateLoanNumber
+);
 
-router.get("/util/loans-by-status", protect, isAdmin, getAllLoansByStatus);
+router.get("/util/loans-by-status", protect, getAllLoansByStatus);
 
 export default router;
