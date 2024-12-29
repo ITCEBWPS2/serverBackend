@@ -54,27 +54,25 @@ export const isPresidentOrVicePresident = (req, res, next) => {
   ) {
     next();
   } else {
-    res
-      .status(403)
-      .json({
-        message: "Not authorized as a President, Vice President or Super Admin",
-      });
+    res.status(403).json({
+      message: "Not authorized as a President, Vice President or Super Admin",
+    });
   }
 };
 
-// Authorization middleware for Secretory and Assistant Secretory
-export const isSecretoryOrAssistantSecretory = (req, res, next) => {
+// Authorization middleware for Secretary and Assistant Secretary
+export const isSecretaryOrAssistantSecretary = (req, res, next) => {
   if (
     req.user &&
-    (req.user.role === "secretory" ||
-      req.user.role === "assistant_secretory" ||
+    (req.user.role === "secretary" ||
+      req.user.role === "assistant_secretary" ||
       req.user.role === "super_admin")
   ) {
     next();
   } else {
     res.status(403).json({
       message:
-        "Not authorized as a Secretory, Assistant Secretory or Super Admin",
+        "Not authorized as a Secretary, Assistant Secretary or Super Admin",
     });
   }
 };

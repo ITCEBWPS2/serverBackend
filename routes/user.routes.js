@@ -11,7 +11,7 @@ import {
   generateWelfareNumber,
 } from "../controllers/user.controller.js";
 import {
-  isSecretoryOrAssistantSecretory,
+  isSecretaryOrAssistantSecretary,
   isSuperAdmin,
   protect,
 } from "../middleware/auth.middleware.js";
@@ -24,16 +24,16 @@ router.get("/me", protect, getLoggedInUserDetails);
 router
   .route("/")
   .get(protect, getAllUsers)
-  .post(protect, isSecretoryOrAssistantSecretory, registerMember);
+  .post(protect, isSecretaryOrAssistantSecretary, registerMember);
 router
   .route("/:id")
   .get(protect, getUserDetails)
-  .put(protect, isSecretoryOrAssistantSecretory, updateUserDetails)
+  .put(protect, isSecretaryOrAssistantSecretary, updateUserDetails)
   .delete(protect, isSuperAdmin, deleteUser);
 router.get(
   "/util/generate-welfare-number",
   protect,
-  isSecretoryOrAssistantSecretory,
+  isSecretaryOrAssistantSecretary,
   generateWelfareNumber
 );
 
