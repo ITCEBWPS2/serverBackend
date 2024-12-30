@@ -6,11 +6,11 @@ import Member from "../models/member.model.js";
 // @access Private (Admin/Member)
 export const createDeathFund = async (req, res) => {
   try {
-    const { memberId, personType, amount, date, additionalNotes } = req.body;
+    const { epf, personType, amount, date, additionalNotes } = req.body;
 
     const newBenefit = new DeathFund({
       benefit: "deathfund",
-      memberId,
+      epf,
       personType,
       amount,
       date,
@@ -19,15 +19,15 @@ export const createDeathFund = async (req, res) => {
 
     const savedBenefit = await newBenefit.save();
 
-    const updatedMember = await Member.findByIdAndUpdate(
-      memberId,
+    const updatedMember = await Member.findOneAndUpdate(
+      { epf },
       { $push: { deathFunds: savedBenefit._id } },
       { new: true }
     );
 
     if (!updatedMember) {
       return res.status(404).json({
-        message: "Member not found with the provided epf Number",
+        message: "Member not found with the provided EPF Number",
       });
     }
 
@@ -103,8 +103,8 @@ export const deleteDeathFund = async (req, res) => {
       return res.status(404).json({ error: "Death fund not found" });
     }
 
-    await Member.findByIdAndUpdate(
-      benefit.memberId,
+    await Member.findOneAndUpdate(
+      { epf: benefit.epf },
       { $pull: { deathFunds: req.params.id } },
       { new: true }
     );
