@@ -6,11 +6,11 @@ import Member from "../models/member.model.js";
 // @access Private (Admin/Member)
 export const createRefund = async (req, res) => {
   try {
-    const { memberId, amount, reason, message } = req.body;
+    const { epf, amount, reason, message } = req.body;
 
     const newBenefit = new Refund({
       benefit: "refund",
-      memberId,
+      epf,
       amount,
       reason,
       message,
@@ -18,11 +18,17 @@ export const createRefund = async (req, res) => {
 
     const savedBenefit = await newBenefit.save();
 
-    await Member.findByIdAndUpdate(
-      memberId,
+    const updatedMember = await Member.findOneAndUpdate(
+      { epf },
       { $push: { refunds: savedBenefit._id } },
       { new: true }
     );
+
+    if (!updatedMember) {
+      return res.status(404).json({
+        message: "Member not found with the provided EPF Number",
+      });
+    }
 
     res.status(201).json({
       message: "Refund created and added to member successfully",
@@ -96,8 +102,8 @@ export const deleteRefund = async (req, res) => {
       return res.status(404).json({ error: "Refund not found" });
     }
 
-    await Member.findByIdAndUpdate(
-      benefit.memberId,
+    await Member.findOneAndUpdate(
+      { epf: benefit.epf },
       { $pull: { refunds: req.params.id } },
       { new: true }
     );

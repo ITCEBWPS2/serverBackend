@@ -6,9 +6,8 @@ const refundSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    memberId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Member",
+    epf: {
+      type: String,
       required: true,
     },
     amount: {

@@ -6,26 +6,26 @@ import Member from "../models/member.model.js";
 // @access Private (Admin/Member)
 export const createMedical = async (req, res) => {
   try {
-    const { memberId, date, reason } = req.body;
+    const { epf, date, reason } = req.body;
 
     const newBenefit = new Medical({
       benefit: "medical",
-      memberId,
+      epf,
       date,
       reason,
     });
 
     const savedBenefit = await newBenefit.save();
 
-    const updatedMember = await Member.findByIdAndUpdate(
-      memberId,
+    const updatedMember = await Member.findOneAndUpdate(
+      { epf },
       { $push: { medicals: savedBenefit._id } },
       { new: true }
     );
 
     if (!updatedMember) {
       return res.status(404).json({
-        message: "Member not found with the provided ID",
+        message: "Member not found with the provided EPF number",
       });
     }
 
@@ -101,8 +101,8 @@ export const deleteMedical = async (req, res) => {
       return res.status(404).json({ error: "Medical not found" });
     }
 
-    await Member.findByIdAndUpdate(
-      benefit.memberId,
+    await Member.findOneAndUpdate(
+      { epf: benefit.epf },
       { $pull: { medicals: req.params.id } },
       { new: true }
     );
