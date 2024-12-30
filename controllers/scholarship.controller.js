@@ -6,22 +6,28 @@ import Member from "../models/member.model.js";
 // @access Private (Admin/Member)
 export const createScholarship = async (req, res) => {
   try {
-    const { memberId, indexNumber, amount } = req.body;
+    const { epf, indexNumber, amount } = req.body;
 
     const newBenefit = new Scholarship({
       benefit: "scholarship",
-      memberId,
+      epf,
       indexNumber,
       amount,
     });
 
     const savedBenefit = await newBenefit.save();
 
-    await Member.findByIdAndUpdate(
-      memberId,
+    const updatedMember = await Member.findOneAndUpdate(
+      { epf },
       { $push: { scholarships: savedBenefit._id } },
       { new: true }
     );
+
+    if (!updatedMember) {
+      return res.status(404).json({
+        message: "Member not found with the provided EPF Number",
+      });
+    }
 
     res.status(201).json({
       message: "Scholarship created and added to member successfully",
@@ -95,8 +101,8 @@ export const deleteScholarship = async (req, res) => {
       return res.status(404).json({ error: "Scholarship not found" });
     }
 
-    await Member.findByIdAndUpdate(
-      benefit.memberId,
+    await Member.findOneAndUpdate(
+      { epf: benefit.epf },
       { $pull: { scholarships: req.params.id } },
       { new: true }
     );

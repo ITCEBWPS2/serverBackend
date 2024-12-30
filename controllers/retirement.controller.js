@@ -6,22 +6,28 @@ import Member from "../models/member.model.js";
 // @access Private (Admin/Member)
 export const createRetirement = async (req, res) => {
   try {
-    const { memberId, date, amount } = req.body;
+    const { epf, date, amount } = req.body;
 
     const newBenefit = new Retirement({
       benefit: "retirement",
-      memberId,
+      epf,
       date,
       amount,
     });
 
     const savedBenefit = await newBenefit.save();
 
-    await Member.findByIdAndUpdate(
-      memberId,
+    const updatedMember = await Member.findOneAndUpdate(
+      { epf },
       { $push: { retirements: savedBenefit._id } },
       { new: true }
     );
+
+    if (!updatedMember) {
+      return res.status(404).json({
+        message: "Member not found with the provided EPF Number",
+      });
+    }
 
     res.status(201).json({
       message: "Retirements Gift created and added to member successfully",
@@ -95,8 +101,8 @@ export const deleteRetirement = async (req, res) => {
       return res.status(404).json({ error: "Retirement not found" });
     }
 
-    await Member.findByIdAndUpdate(
-      benefit.memberId,
+    await Member.findOneAndUpdate(
+      { epf: benefit.epf },
       { $pull: { retirements: req.params.id } },
       { new: true }
     );
