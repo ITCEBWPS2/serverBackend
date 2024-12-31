@@ -5,21 +5,54 @@ import Member from "../models/member.model.js";
 // @route POST /api/loans
 // @access Private (Admin/Member)
 export const createLoanApplication = async (req, res) => {
-  try {
-    const memberId = req.user.id;
+  const {
+    epf,
+    loanNumber,
+    loanAmount,
+    name,
+    address,
+    position,
+    branch,
+    contactNo,
+    nationalIdNumber,
+    reasonForLoan,
+    requiredLoanDate,
+    dateOfBirth,
+    retirementDate,
+    loanStatus,
+  } = req.body;
 
+  try {
     const newLoan = new Loan({
-      ...req.body,
-      memberId,
+      epf,
+      loanNumber,
+      loanAmount,
+      name,
+      address,
+      position,
+      branch,
+      contactNo,
+      nationalIdNumber,
+      reasonForLoan,
+      requiredLoanDate,
+      dateOfBirth,
+      retirementDate,
+      loanStatus,
     });
 
     const savedLoan = await newLoan.save();
 
-    await Member.findByIdAndUpdate(
-      memberId,
+    const updatedMember = await Member.findOneAndUpdate(
+      { epf },
       { $push: { loans: savedLoan._id } },
       { new: true }
     );
+
+    if (!updatedMember) {
+      return res.status(404).json({
+        message: "Member not found with the provided EPF number",
+      });
+    }
 
     res.status(201).json({
       message: "Loan created and added to member successfully",
@@ -171,7 +204,16 @@ export const deleteLoanApplication = async (req, res) => {
     if (!loan) {
       return res.status(404).json({ error: "Loan application not found" });
     }
-    res.status(200).json({ message: "Loan application deleted successfully" });
+
+    await Member.findOneAndUpdate(
+      { epf: loan.epf },
+      { $pull: { loans: req.params.id } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Loan deleted successfully and removed from user loans",
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
