@@ -147,6 +147,26 @@ export const getUserDetails = async (req, res) => {
   }
 };
 
+// @desc Get User By EPF
+// @route GET /api/members/find/:epf
+// @access Private (Admin/Member)
+export const getUserByEpf = async (req, res) => {
+  try {
+    const member = await Member.findOne({ epf: req.params.epf });
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    // Return member data without the password field
+    const { password, ...memberWithoutPassword } = member.toObject();
+    res.status(200).json(memberWithoutPassword);
+  } catch (error) {
+    console.error("Error fetching member details:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // @desc Get Logged In User Details
 // @route GET /api/members/me
 // @access Private (Admin/Member)
