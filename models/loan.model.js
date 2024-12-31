@@ -2,15 +2,7 @@ import mongoose from "mongoose";
 
 const loanSchema = new mongoose.Schema(
   {
-    memberId: {
-      type: String,
-      required: true,
-    },
-    memberNumber: {
-      type: String,
-      required: true,
-    },
-    epfNumber: {
+    epf: {
       type: String,
       required: true,
     },
