@@ -9,6 +9,7 @@ import {
   getAllUsers,
   deleteUser,
   generateWelfareNumber,
+  getUserByEpf,
 } from "../controllers/user.controller.js";
 import {
   isSecretaryOrAssistantSecretary,
@@ -21,6 +22,7 @@ const router = express.Router();
 router.post("/auth", authUser);
 router.post("/logout", logoutUser);
 router.get("/me", protect, getLoggedInUserDetails);
+router.get("/find/:epf", protect, getUserByEpf);
 router
   .route("/")
   .get(protect, getAllUsers)
