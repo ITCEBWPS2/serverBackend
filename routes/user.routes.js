@@ -22,15 +22,18 @@ const router = express.Router();
 router.post("/auth", authUser);
 router.post("/logout", logoutUser);
 router.get("/me", protect, getLoggedInUserDetails);
-router.get("/find/:epf", protect, getUserByEpf);
+router.get("/find/:epfnumber", protect, getUserByEpf);
 router
   .route("/")
-  .get(protect, getAllUsers)
+  .get( protect,getAllUsers)
   .post(protect, isSecretaryOrAssistantSecretary, registerMember);
 router
-  .route("/:id")
-  .get(protect, getUserDetails)
-  .put(protect, isSecretaryOrAssistantSecretary, updateUserDetails)
+  .route("/:epfnumber")
+  // .get( protect,getUserDetails)
+  .get( protect,getUserByEpf)
+  // .put( protect, isSecretaryOrAssistantSecretary,updateUserDetails)
+  .put( updateUserDetails)
+// mekath super adminta witharai
   .delete(protect, isSuperAdmin, deleteUser);
 router.get(
   "/util/generate-welfare-number",

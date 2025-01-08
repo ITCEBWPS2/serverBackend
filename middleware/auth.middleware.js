@@ -6,6 +6,8 @@ export const protect = async (req, res, next) => {
     let token;
 
     token = req.cookies.jwt;
+    console.log("cookies",req.cookies);
+    
 
     if (token) {
       try {
@@ -13,8 +15,8 @@ export const protect = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         // Assign the decoded user to current user
         req.user = await Member.findById(decoded.userId).select("-password");
-
-        next();
+        console.log("current user",req.user);
+       next();
       } catch (error) {
         res.status(401);
         throw new Error("Invalid Token");
@@ -26,6 +28,7 @@ export const protect = async (req, res, next) => {
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
+
 };
 
 export const isAdmin = (req, res, next) => {
@@ -64,9 +67,9 @@ export const isPresidentOrVicePresident = (req, res, next) => {
 export const isSecretaryOrAssistantSecretary = (req, res, next) => {
   if (
     req.user &&
-    (req.user.role === "secretary" ||
-      req.user.role === "assistant_secretary" ||
-      req.user.role === "super_admin")
+    ( req.user.role === "super_admin"||req.user.role === "secretary" ||
+      req.user.role === "assistant_secretary" 
+     )
   ) {
     next();
   } else {
@@ -96,9 +99,27 @@ export const isTreasurerOrAssistantTreasurer = (req, res, next) => {
 
 // Authorization middleware for Treasurer and Assistant Treasurer
 export const isSuperAdmin = (req, res, next) => {
-  if (req.user && req.user.role === "super_admin") {
-    next();
-  } else {
-    res.status(403).json({ message: "Not authorized as a Super Admin" });
+  try {
+    if (req.user && req.user.role === "super_admin") {
+      console.log(req.user.role);
+      
+      next();
+    } else{
+      console.log(req.user);
+       res.status(401).json({success:false,message:"Only can access from super admin"})
+    }
+    
+  } catch (error) {
+    console.log("Not authorized",error);
+    
+    res.status(403).json({message:"Not authorized as a Super Admin",error:error})
+    
   }
+  // if (req.user && req.user.role === "super_admin") {
+  //   next();
+  // } else {
+  //   console.log();
+    
+  //   res.status(403).json({ message: "Not authorized as a Super Admin" });
+  // }
 };

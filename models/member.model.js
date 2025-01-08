@@ -32,7 +32,7 @@ const memberSchema = mongoose.Schema(
     },
     welfareNo: {
       type: String,
-      required: true,
+      // required: true,
     },
     role: {
       type: String,
@@ -51,7 +51,7 @@ const memberSchema = mongoose.Schema(
     },
     payroll: {
       type: String,
-      required: true,
+      // required: true,
     },
     division: {
       type: String,
@@ -118,7 +118,7 @@ const memberSchema = mongoose.Schema(
     },
     memberFee: {
       type: Number,
-      required: true,
+      // required: true,
     },
     loans: [
       {
