@@ -21,25 +21,24 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 const app = express();
 
-app.get("/.netlify/functions/api", (req, res) => {
+app.get("/", (req, res) => {
   return res.json({
     message: "Hello from serverless function !!!",
   });
 });
-
+// Extract cookie data from HTTP requests
+app.use(cookieParser());
 // Middleware for parsing incoming requests with JSON payloads
 app.use(express.json());
 // Allow sending form data
 app.use(express.urlencoded({ extended: true }));
 
-// Extract cookie data from HTTP requests
-app.use(cookieParser());
+
 
 // Set up CORS to allow requests from multiple origins
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://cebwps2welfare.netlify.app",
-  "https://cebwelfare.netlify.app",
+  "http://localhost:5000",
 ];
 
 app.use(

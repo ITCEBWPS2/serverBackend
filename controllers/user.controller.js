@@ -1,5 +1,4 @@
-import Member from "../models/member.model.js";
-import Admin from "../models/admin.model.js";
+import Member from "../models/member.model.js"
 import generateToken from "../utils/generateToken.js";
 import bcrypt from "bcrypt";
 
@@ -152,7 +151,9 @@ export const getUserDetails = async (req, res) => {
 // @access Private (Admin/Member)
 export const getUserByEpf = async (req, res) => {
   try {
-    const member = await Member.findOne({ epf: req.params.epf });
+    const member = await Member.findOne({ epf: req.params.epfnumber });
+    console.log(member);
+    
 
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
@@ -198,8 +199,10 @@ export const getAllUsers = async (req, res) => {
 
 export const updateUserDetails = async (req, res) => {
   try {
+
+   
     // Find the member by ID
-    const member = await Member.findById(req.params.id);
+    const member = await Member.findOne({ epf: req.params.epfnumber });
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
@@ -210,11 +213,18 @@ export const updateUserDetails = async (req, res) => {
       req.body.password = await bcrypt.hash(req.body.password, salt);
     }
 
-    // Update the member with the new details
-    Object.assign(member, req.body);
-    await member.save(); // This triggers the pre("save") middleware if other fields are modified
 
-    res.status(200).json(member);
+
+
+    // // Update the member with the new details
+    const updatedMember = await Member.findByIdAndUpdate(member._id, req.body, {
+      new: true,
+      });
+    // Object.assign(member, req.body);
+
+   // await updatedMember.save(); // This triggers the pre("save") middleware if other fields are modified
+
+    res.status(200).json(updatedMember);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

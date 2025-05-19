@@ -16,24 +16,24 @@ const loanSchema = new mongoose.Schema(
     },
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     address: {
       type: String,
-      required: true,
+      required: false,
     },
     position: {
       type: String,
-      required: true,
+      required: false,
     },
     branch: {
       type: String,
-      required: true,
+      required: false,
     },
     contactNo: {
       mobile: {
         type: String,
-        required: true,
+        required: false,
       },
       landline: {
         type: String,
@@ -41,23 +41,23 @@ const loanSchema = new mongoose.Schema(
     },
     nationalIdNumber: {
       type: String,
-      required: true,
+      required: false,
     },
     reasonForLoan: {
       type: String,
-      required: true,
+      required: false,
     },
     requiredLoanDate: {
       type: Date,
-      required: true,
+      required: false,
     },
     dateOfBirth: {
       type: Date,
-      required: true,
+      required: false,
     },
     retirementDate: {
       type: Date,
-      required: true,
+      required: false,
     },
     loanStatus: {
       type: String,

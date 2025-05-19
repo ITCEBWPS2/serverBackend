@@ -147,16 +147,30 @@ export const viewSingleLoanApplication = async (req, res) => {
 export const updateLoanStatus = async (req, res) => {
   try {
     const { loanId } = req.params;
-    const { loanStatus } = req.body;
+    const { loanStatus, rejectionReason } = req.body;
 
     const allowedStatuses = ["pending", "approved", "rejected"];
     if (!allowedStatuses.includes(loanStatus)) {
       return res.status(400).json({ message: "Invalid loan status" });
     }
 
+    // If status is rejected, ensure rejectionReason is provided
+    if (loanStatus === "rejected" && (!rejectionReason || rejectionReason.trim() === "")) {
+      return res.status(400).json({ message: "Rejection reason is required when rejecting a loan" });
+    }
+
+    const updateFields = { loanStatus };
+
+    // Only include rejectionReason if status is rejected
+    if (loanStatus === "rejected") {
+      updateFields.rejectionReason = rejectionReason;
+    } else {
+      updateFields.rejectionReason = null; // Clear reason if status changes to something else
+    }
+
     const updatedLoan = await Loan.findByIdAndUpdate(
       loanId,
-      { loanStatus },
+      updateFields,
       { new: true }
     );
 
@@ -176,6 +190,7 @@ export const updateLoanStatus = async (req, res) => {
     });
   }
 };
+
 
 // @desc Update Loan Application
 // @route PUT /api/loans/:id
