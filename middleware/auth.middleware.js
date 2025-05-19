@@ -6,7 +6,6 @@ export const protect = async (req, res, next) => {
     let token;
 
     token = req.cookies.jwt;
-    console.log("cookies",req.cookies);
 
     if (token) {
       try {
@@ -66,10 +65,9 @@ export const isPresidentOrVicePresident = (req, res, next) => {
 export const isSecretaryOrAssistantSecretary = (req, res, next) => {
   if (
     req.user &&
-    ( req.user.role === "super_admin"||
-      req.user.role === "secretary" ||
-      req.user.role === "assistant_secretary" 
-     )
+    (req.user.role === "secretary" ||
+      req.user.role === "assistant_secretary" ||
+      req.user.role === "super_admin")
   ) {
     next();
   } else {
