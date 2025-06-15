@@ -7,6 +7,7 @@ import userRoutes from "./routes/user.routes.js";
 import loanRoutes from "./routes/loan.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import emailRoutes from "./routes/email.routes.js";
+import logRoutes from "./routes/log.route.js"
 import deathFundRoutes from "./routes/deathFund.routes.js";
 import scholarshipRoutes from "./routes/scholarship.routes.js";
 import medicalRoutes from "./routes/medical.routes.js";
@@ -14,6 +15,7 @@ import refundRoutes from "./routes/refund.routes.js";
 import retirementRoutes from "./routes/retirement.routes.js";
 import cors from "cors";
 import ServerlessHttp from "serverless-http";
+
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
@@ -39,6 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5000",
+  "*"
 ];
 
 app.use(
@@ -60,6 +63,7 @@ app.use("/api/members", userRoutes);
 app.use("/api/loans", loanRoutes);
 app.use("/api/admins", adminRoutes);
 app.use("/api", emailRoutes);
+app.use("/api", logRoutes);
 app.use("/api/deathfunds", deathFundRoutes);
 app.use("/api/scholarships", scholarshipRoutes);
 app.use("/api/medicals", medicalRoutes);
