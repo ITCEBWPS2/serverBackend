@@ -3,7 +3,7 @@ import generateToken from "../utils/generateToken.js";
 import Logger from "../utils/logger.js";
 import bcrypt from "bcrypt";
 
-// @desc Auhenticate User
+// @desc Authenticate User
 // @route POST /api/members/auth
 // @access Public (Admin/Member)
 export const authUser = async (req, res) => {
@@ -15,7 +15,6 @@ export const authUser = async (req, res) => {
         });
 
         if (user && (await user.matchPassword(password))) {
-            // Generate and set token in cookie
             const token = generateToken(user._id, res);
 
             await Logger.info("com.ceb.userctrl.authUser", "User logged in successfully", user._id, {
@@ -58,7 +57,6 @@ export const registerMember = async (req, res) => {
     try {
         const userExists = await Member.findOne({
             $or: [{ epf }, { welfareNo }],
-            //[{ email }, { epf }, { welfareNo }],
         });
 
         if (userExists) {
@@ -96,9 +94,16 @@ export const registerMember = async (req, res) => {
 
         await newUser.save();
 
+        await Logger.info("com.ceb.userctrl.registerMember", "New member registered", newUser._id, {
+            performedBy: req.user?._id, // Logger added ✅
+        });
+
         res.status(201).json({ data: { user: newUser } });
     } catch (error) {
-        console.log(error);
+        await Logger.error("com.ceb.userctrl.registerMember", error.message, null, {
+            performedBy: req.user?._id, // Logger added ✅
+        });
+
         res.status(400).json({ message: error.message });
     }
 };
@@ -112,8 +117,14 @@ export const logoutUser = async (req, res) => {
             httpOnly: true,
             expires: new Date(0),
         });
+
+        await Logger.info("com.ceb.userctrl.logoutUser", "User logged out", req.user?._id, {
+            ip: req.ip, // Logger added ✅
+        });
+
         res.status(200).json({ message: "User logged out" });
     } catch (error) {
+        await Logger.error("com.ceb.userctrl.logoutUser", error.message, req.user?._id); // Logger added ✅
         res.status(500).json({ message: error.message });
     }
 };
@@ -129,11 +140,14 @@ export const getUserDetails = async (req, res) => {
             return res.status(404).json({ message: "Member not found" });
         }
 
-        // Return member data without the password field
+        await Logger.info("com.ceb.userctrl.getUserDetails", "Viewed member details", req.user?._id, {
+            viewedUserId: member._id, // Logger added ✅
+        });
+
         const { password, ...memberWithoutPassword } = member.toObject();
         res.status(200).json(memberWithoutPassword);
     } catch (error) {
-        console.error("Error fetching member details:", error);
+        await Logger.error("com.ceb.userctrl.getUserDetails", error.message, req.user?._id); // Logger added ✅
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -144,17 +158,19 @@ export const getUserDetails = async (req, res) => {
 export const getUserByEpf = async (req, res) => {
     try {
         const member = await Member.findOne({ epf: req.params.epfnumber });
-        console.log(member);
 
         if (!member) {
             return res.status(404).json({ message: "Member not found" });
         }
 
-        // Return member data without the password field
+        await Logger.info("com.ceb.userctrl.getUserByEpf", "Viewed member by EPF", req.user?._id, {
+            viewedEpf: req.params.epfnumber, // Logger added ✅
+        });
+
         const { password, ...memberWithoutPassword } = member.toObject();
         res.status(200).json(memberWithoutPassword);
     } catch (error) {
-        console.error("Error fetching member details:", error);
+        await Logger.error("com.ceb.userctrl.getUserByEpf", error.message, req.user?._id); // Logger added ✅
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -166,11 +182,13 @@ export const getLoggedInUserDetails = async (req, res) => {
     try {
         const user = req.user;
         if (user) {
+            await Logger.info("com.ceb.userctrl.getLoggedInUserDetails", "Fetched own details", user._id); // Logger added ✅
             res.json(user);
         } else {
             res.status(401).json({ message: "Not authenticated" });
         }
     } catch (error) {
+        await Logger.error("com.ceb.userctrl.getLoggedInUserDetails", error.message); // Logger added ✅
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -181,37 +199,42 @@ export const getLoggedInUserDetails = async (req, res) => {
 export const getAllUsers = async (req, res) => {
     try {
         const members = await Member.find();
+
+        await Logger.info("com.ceb.userctrl.getAllUsers", "Fetched all members", req.user?._id); // Logger added ✅
+
         res.json(members);
     } catch (error) {
-        console.error(err.message);
+        await Logger.error("com.ceb.userctrl.getAllUsers", error.message, req.user?._id); // Logger added ✅
         res.status(500).json({ message: error.message });
     }
 };
 
+// @desc Update Member Details
+// @route PUT /api/members/update/:epfnumber
+// @access Private (Admin)
 export const updateUserDetails = async (req, res) => {
     try {
-        // Find the member by ID
         const member = await Member.findOne({ epf: req.params.epfnumber });
         if (!member) {
             return res.status(404).json({ message: "Member not found" });
         }
 
-        // Check if password is being updated
         if (req.body.password) {
             const salt = await bcrypt.genSalt(10);
             req.body.password = await bcrypt.hash(req.body.password, salt);
         }
 
-        // // Update the member with the new details
         const updatedMember = await Member.findByIdAndUpdate(member._id, req.body, {
             new: true,
         });
-        // Object.assign(member, req.body);
 
-        // await updatedMember.save(); // This triggers the pre("save") middleware if other fields are modified
+        await Logger.info("com.ceb.userctrl.updateUserDetails", "Updated member details", updatedMember._id, {
+            updatedBy: req.user?._id, // Logger added ✅
+        });
 
         res.status(200).json(updatedMember);
     } catch (error) {
+        await Logger.error("com.ceb.userctrl.updateUserDetails", error.message, req.user?._id); // Logger added ✅
         res.status(500).json({ message: error.message });
     }
 };
@@ -225,8 +248,14 @@ export const deleteUser = async (req, res) => {
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
+
+        await Logger.warn("com.ceb.userctrl.deleteUser", "Deleted member", user._id, {
+            deletedBy: req.user?._id, // Logger added ✅
+        });
+
         res.send({ message: "User deleted successfully" });
     } catch (error) {
+        await Logger.error("com.ceb.userctrl.deleteUser", error.message, req.user?._id); // Logger added ✅
         res.status(500).send({ message: error.message });
     }
 };
@@ -247,9 +276,14 @@ export const generateWelfareNumber = async (req, res) => {
             }
         }
 
+        await Logger.info("com.ceb.userctrl.generateWelfareNumber", "Generated welfare number", null, {
+            generatedBy: req.user?._id,
+            generatedNumber: uniqueNumber, // Logger added ✅
+        });
+
         res.status(200).json(uniqueNumber);
     } catch (error) {
-        console.error("Error generating unique welfare number:", error);
+        await Logger.error("com.ceb.userctrl.generateWelfareNumber", error.message, req.user?._id); // Logger added ✅
         res.status(500).send({ message: error.message });
     }
 };
