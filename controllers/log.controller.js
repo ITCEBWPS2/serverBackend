@@ -1,4 +1,4 @@
-import Logger from "../utils/logger.js"
+import Logger from "../utils/Logger.js";
 export const getLogs = async (req, res) => {
     try {
 

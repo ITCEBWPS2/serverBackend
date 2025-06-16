@@ -1,6 +1,6 @@
 import Member from "../models/member.model.js";
 import generateToken from "../utils/generateToken.js";
-import Logger from "../utils/logger.js";
+import Logger from "../utils/Logger.js";
 import bcrypt from "bcrypt";
 
 // @desc Authenticate User

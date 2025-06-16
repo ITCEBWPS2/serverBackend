@@ -1,43 +1,22 @@
 import Loan from "../models/loan.model.js";
 import Member from "../models/member.model.js";
+import Logger from "../utils/Logger.js";
 
 // @desc Create a Loan Application
 // @route POST /api/loans
 // @access Private (Admin/Member)
 export const createLoanApplication = async (req, res) => {
   const {
-    epf,
-    loanNumber,
-    loanAmount,
-    name,
-    address,
-    position,
-    branch,
-    contactNo,
-    nationalIdNumber,
-    reasonForLoan,
-    requiredLoanDate,
-    dateOfBirth,
-    retirementDate,
-    loanStatus,
+    epf, loanNumber, loanAmount, name, address, position,
+    branch, contactNo, nationalIdNumber, reasonForLoan,
+    requiredLoanDate, dateOfBirth, retirementDate, loanStatus
   } = req.body;
 
   try {
     const newLoan = new Loan({
-      epf,
-      loanNumber,
-      loanAmount,
-      name,
-      address,
-      position,
-      branch,
-      contactNo,
-      nationalIdNumber,
-      reasonForLoan,
-      requiredLoanDate,
-      dateOfBirth,
-      retirementDate,
-      loanStatus,
+      epf, loanNumber, loanAmount, name, address, position,
+      branch, contactNo, nationalIdNumber, reasonForLoan,
+      requiredLoanDate, dateOfBirth, retirementDate, loanStatus
     });
 
     const savedLoan = await newLoan.save();
@@ -49,10 +28,10 @@ export const createLoanApplication = async (req, res) => {
     );
 
     if (!updatedMember) {
-      return res.status(404).json({
-        message: "Member not found with the provided EPF number",
-      });
+      return res.status(404).json({ message: "Member not found with the provided EPF number" });
     }
+
+    await Logger.info(req.user._id, "Create", `Loan created for EPF: ${epf}`, savedLoan._id, req.ip);
 
     res.status(201).json({
       message: "Loan created and added to member successfully",
@@ -73,12 +52,13 @@ export const createLoanApplication = async (req, res) => {
 export const getLoansByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
-
     const member = await Member.findById(userId).populate("loans");
 
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
+
+    await Logger.info(req.user._id, "Read", `Viewed loans of user ID: ${userId}`, userId, req.ip);
 
     res.status(200).json({
       message: "Loans retrieved successfully",
@@ -99,6 +79,9 @@ export const getLoansByUserId = async (req, res) => {
 export const viewAllLoanApplications = async (req, res) => {
   try {
     const loans = await Loan.find();
+
+    await Logger.info(req.user._id, "Read", "Viewed all loan applications", null, req.ip);
+
     res.status(200).json(loans);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -111,18 +94,18 @@ export const viewAllLoanApplications = async (req, res) => {
 export const getAllLoansByStatus = async (req, res) => {
   try {
     const { status } = req.query;
-
     let filter = {};
     if (status && status !== "all") {
       filter.loanStatus = status;
     }
 
     const loans = await Loan.find(filter);
+
+    await Logger.info(req.user._id, "Read", `Viewed loans filtered by status: ${status}`, null, req.ip);
+
     res.status(200).json(loans);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching loans", error: error.message });
+    res.status(500).json({ message: "Error fetching loans", error: error.message });
   }
 };
 
@@ -135,6 +118,9 @@ export const viewSingleLoanApplication = async (req, res) => {
     if (!loan) {
       return res.status(404).json({ error: "Loan application not found..!" });
     }
+
+    await Logger.info(req.user._id, "Read", `Viewed loan with ID: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json(loan);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -154,29 +140,24 @@ export const updateLoanStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid loan status" });
     }
 
-    // If status is rejected, ensure rejectionReason is provided
     if (loanStatus === "rejected" && (!rejectionReason || rejectionReason.trim() === "")) {
       return res.status(400).json({ message: "Rejection reason is required when rejecting a loan" });
     }
 
     const updateFields = { loanStatus };
-
-    // Only include rejectionReason if status is rejected
     if (loanStatus === "rejected") {
       updateFields.rejectionReason = rejectionReason;
     } else {
-      updateFields.rejectionReason = null; // Clear reason if status changes to something else
+      updateFields.rejectionReason = null;
     }
 
-    const updatedLoan = await Loan.findByIdAndUpdate(
-      loanId,
-      updateFields,
-      { new: true }
-    );
+    const updatedLoan = await Loan.findByIdAndUpdate(loanId, updateFields, { new: true });
 
     if (!updatedLoan) {
       return res.status(404).json({ message: "Loan not found" });
     }
+
+    await Logger.info(req.user._id, "Update", `Updated loan status to '${loanStatus}'`, loanId, req.ip);
 
     res.status(200).json({
       message: "Loan status updated successfully",
@@ -191,7 +172,6 @@ export const updateLoanStatus = async (req, res) => {
   }
 };
 
-
 // @desc Update Loan Application
 // @route PUT /api/loans/:id
 // @access Private (Admin)
@@ -201,9 +181,13 @@ export const updateLoanApplication = async (req, res) => {
       new: true,
       runValidators: true,
     });
+
     if (!loan) {
       return res.status(404).json({ error: "Loan application not found !" });
     }
+
+    await Logger.info(req.user._id, "Update", "Updated loan application", req.params.id, req.ip);
+
     res.status(200).json(loan);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -225,6 +209,8 @@ export const deleteLoanApplication = async (req, res) => {
       { $pull: { loans: req.params.id } },
       { new: true }
     );
+
+    await Logger.info(req.user._id, "Delete", "Deleted loan application", req.params.id, req.ip);
 
     res.status(200).json({
       message: "Loan deleted successfully and removed from user loans",
@@ -249,6 +235,8 @@ export const generateLoanNumber = async (req, res) => {
         isUnique = true;
       }
     }
+
+    await Logger.info(req.user._id, "Generate", "Generated unique loan number", null, req.ip);
 
     res.status(200).json(uniqueNumber);
   } catch (error) {

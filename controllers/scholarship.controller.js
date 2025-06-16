@@ -1,5 +1,6 @@
 import Scholarship from "../models/scholarship.model.js";
 import Member from "../models/member.model.js";
+import Logger from "../utils/Logger.js"; // Import Logger utility
 
 // @desc Create a Scholarship
 // @route POST /api/scholarship
@@ -29,6 +30,9 @@ export const createScholarship = async (req, res) => {
       });
     }
 
+    // Log creation
+    await Logger.info(req.user._id, "Create", `Created scholarship for EPF: ${epf}`, savedBenefit._id, req.ip);
+
     res.status(201).json({
       message: "Scholarship created and added to member successfully",
       benefit: savedBenefit,
@@ -48,6 +52,10 @@ export const createScholarship = async (req, res) => {
 export const viewAllScholarships = async (req, res) => {
   try {
     const benefits = await Scholarship.find();
+
+    // Log view all
+    await Logger.info(req.user._id, "Read", "Viewed all scholarships", null, req.ip);
+
     res.status(200).json(benefits);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -63,6 +71,10 @@ export const viewSingleScholarship = async (req, res) => {
     if (!benefit) {
       return res.status(404).json({ error: "Scholarship not found..!" });
     }
+
+    // Log single view
+    await Logger.info(req.user._id, "Read", `Viewed scholarship ID: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json(benefit);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -85,6 +97,10 @@ export const updateScholarship = async (req, res) => {
     if (!updatedBenefit) {
       return res.status(404).json({ error: "Scholarship not found !" });
     }
+
+    // Log update
+    await Logger.info(req.user._id, "Update", `Updated scholarship ID: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json(updatedBenefit);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -107,6 +123,9 @@ export const deleteScholarship = async (req, res) => {
       { new: true }
     );
 
+    // Log delete
+    await Logger.info(req.user._id, "Delete", `Deleted scholarship ID: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json({
       message:
         "Scholarship deleted successfully and removed from member benefits",
@@ -128,6 +147,9 @@ export const getBenefitsByUserId = async (req, res) => {
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
+
+    // Log get by user
+    await Logger.info(req.user._id, "Read", `Viewed scholarships for user: ${userId}`, userId, req.ip);
 
     res.status(200).json({
       message: "Benefits retrieved successfully",

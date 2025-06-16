@@ -1,5 +1,6 @@
 import Refund from "../models/refund.model.js";
 import Member from "../models/member.model.js";
+import Logger from "../utils/Logger.js";
 
 // @desc Create a Refund
 // @route POST /api/refunds
@@ -30,6 +31,8 @@ export const createRefund = async (req, res) => {
       });
     }
 
+    await Logger.info(req.user._id, "Create", `Created refund for EPF: ${epf}`, savedBenefit._id, req.ip);
+
     res.status(201).json({
       message: "Refund created and added to member successfully",
       benefit: savedBenefit,
@@ -49,6 +52,9 @@ export const createRefund = async (req, res) => {
 export const viewAllRefunds = async (req, res) => {
   try {
     const benefits = await Refund.find();
+
+    await Logger.info(req.user._id, "Read", "Viewed all refund records", null, req.ip);
+
     res.status(200).json(benefits);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -64,6 +70,9 @@ export const viewSingleRefund = async (req, res) => {
     if (!benefit) {
       return res.status(404).json({ error: "Refund not found..!" });
     }
+
+    await Logger.info(req.user._id, "Read", `Viewed single refund: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json(benefit);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -86,6 +95,9 @@ export const updateRefund = async (req, res) => {
     if (!updatedBenefit) {
       return res.status(404).json({ error: "Refund not found !" });
     }
+
+    await Logger.info(req.user._id, "Update", `Updated refund ID: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json(updatedBenefit);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -108,6 +120,8 @@ export const deleteRefund = async (req, res) => {
       { new: true }
     );
 
+    await Logger.info(req.user._id, "Delete", `Deleted refund ID: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json({
       message: "Refund deleted successfully and removed from member benefits",
     });
@@ -128,6 +142,8 @@ export const getBenefitsByUserId = async (req, res) => {
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
+
+    await Logger.info(req.user._id, "Read", `Viewed refunds for user: ${userId}`, userId, req.ip);
 
     res.status(200).json({
       message: "Benefits retrieved successfully",

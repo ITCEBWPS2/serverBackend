@@ -1,5 +1,6 @@
 import Medical from "../models/medical.model.js";
 import Member from "../models/member.model.js";
+import Logger from "../utils/Logger.js";
 
 // @desc Create a Medical
 // @route POST /api/medicals
@@ -29,6 +30,8 @@ export const createMedical = async (req, res) => {
       });
     }
 
+    await Logger.info(req.user._id, "Create", `Created medical benefit for EPF: ${epf}`, savedBenefit._id, req.ip);
+
     res.status(201).json({
       message: "Medical created and added to member successfully",
       benefit: savedBenefit,
@@ -48,6 +51,9 @@ export const createMedical = async (req, res) => {
 export const viewAllMedicals = async (req, res) => {
   try {
     const benefits = await Medical.find();
+
+    await Logger.info(req.user._id, "Read", "Viewed all medical records", null, req.ip);
+
     res.status(200).json(benefits);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -63,6 +69,9 @@ export const viewSingleMedical = async (req, res) => {
     if (!benefit) {
       return res.status(404).json({ error: "Medical not found..!" });
     }
+
+    await Logger.info(req.user._id, "Read", `Viewed single medical record: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json(benefit);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -82,9 +91,13 @@ export const updateMedical = async (req, res) => {
         runValidators: true,
       }
     );
+
     if (!updatedBenefit) {
       return res.status(404).json({ error: "Medical not found !" });
     }
+
+    await Logger.info(req.user._id, "Update", `Updated medical benefit ID: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json(updatedBenefit);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -107,6 +120,8 @@ export const deleteMedical = async (req, res) => {
       { new: true }
     );
 
+    await Logger.info(req.user._id, "Delete", `Deleted medical benefit ID: ${req.params.id}`, req.params.id, req.ip);
+
     res.status(200).json({
       message: "Medical deleted successfully and removed from member benefits",
     });
@@ -127,6 +142,8 @@ export const getBenefitsByUserId = async (req, res) => {
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
+
+    await Logger.info(req.user._id, "Read", `Viewed medical benefits for user: ${userId}`, userId, req.ip);
 
     res.status(200).json({
       message: "Benefits retrieved successfully",

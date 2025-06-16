@@ -1,10 +1,10 @@
 import nodemailer from "nodemailer";
+import Logger from "../utils/logger.js"; // Make sure the path is correct
 
 export const sendEmail = async (req, res) => {
   const { name, email, message } = req.body;
 
-  //Configure Nodemailer to send email (update with your SMTP credentials)
-  var transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: process.env.EMAIL_USER,
@@ -12,7 +12,7 @@ export const sendEmail = async (req, res) => {
     },
   });
 
-  var mailOptions = {
+  const mailOptions = {
     from: email,
     replyTo: email,
     to: process.env.EMAIL_USER,
@@ -22,8 +22,22 @@ export const sendEmail = async (req, res) => {
 
   try {
     await transporter.sendMail(mailOptions);
+
+    await Logger.info("com.ceb.emailctrl.sendEmail", "Contact email sent successfully", null, {
+      sender: email,
+      name,
+      ip: req.ip,
+      userAgent: req.get("User-Agent"),
+    });
+
     res.status(200).json({ message: "Email sent successfully!" });
   } catch (error) {
+    await Logger.error("com.ceb.emailctrl.sendEmail", "Failed to send email - " + error.message, null, {
+      sender: email,
+      ip: req.ip,
+      userAgent: req.get("User-Agent"),
+    });
+
     res.status(500).json({ error: "Failed to send email" });
   }
 };
