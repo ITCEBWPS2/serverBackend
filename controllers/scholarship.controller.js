@@ -1,9 +1,9 @@
 import Scholarship from "../models/scholarship.model.js";
 import Member from "../models/member.model.js";
-import Logger from "../utils/Logger.js"; // Import Logger utility
+import Logger from "../utils/Logger.js";
 
 // @desc Create a Scholarship
-// @route POST /api/scholarship
+// @route POST /api/scholarships
 // @access Private (Admin/Member)
 export const createScholarship = async (req, res) => {
   try {
@@ -30,7 +30,6 @@ export const createScholarship = async (req, res) => {
       });
     }
 
-    // Log creation
     await Logger.info(req.user._id, "Create", `Created scholarship for EPF: ${epf}`, savedBenefit._id, req.ip);
 
     res.status(201).json({
@@ -53,7 +52,6 @@ export const viewAllScholarships = async (req, res) => {
   try {
     const benefits = await Scholarship.find();
 
-    // Log view all
     await Logger.info(req.user._id, "Read", "Viewed all scholarships", null, req.ip);
 
     res.status(200).json(benefits);
@@ -69,10 +67,9 @@ export const viewSingleScholarship = async (req, res) => {
   try {
     const benefit = await Scholarship.findById(req.params.id);
     if (!benefit) {
-      return res.status(404).json({ error: "Scholarship not found..!" });
+      return res.status(404).json({ message: "Scholarship not found!" });
     }
 
-    // Log single view
     await Logger.info(req.user._id, "Read", `Viewed scholarship ID: ${req.params.id}`, req.params.id, req.ip);
 
     res.status(200).json(benefit);
@@ -89,16 +86,13 @@ export const updateScholarship = async (req, res) => {
     const updatedBenefit = await Scholarship.findByIdAndUpdate(
       req.params.id,
       req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
+      { new: true, runValidators: true }
     );
+
     if (!updatedBenefit) {
-      return res.status(404).json({ error: "Scholarship not found !" });
+      return res.status(404).json({ message: "Scholarship not found!" });
     }
 
-    // Log update
     await Logger.info(req.user._id, "Update", `Updated scholarship ID: ${req.params.id}`, req.params.id, req.ip);
 
     res.status(200).json(updatedBenefit);
@@ -114,7 +108,7 @@ export const deleteScholarship = async (req, res) => {
   try {
     const benefit = await Scholarship.findByIdAndDelete(req.params.id);
     if (!benefit) {
-      return res.status(404).json({ error: "Scholarship not found" });
+      return res.status(404).json({ message: "Scholarship not found" });
     }
 
     await Member.findOneAndUpdate(
@@ -123,12 +117,10 @@ export const deleteScholarship = async (req, res) => {
       { new: true }
     );
 
-    // Log delete
     await Logger.info(req.user._id, "Delete", `Deleted scholarship ID: ${req.params.id}`, req.params.id, req.ip);
 
     res.status(200).json({
-      message:
-        "Scholarship deleted successfully and removed from member benefits",
+      message: "Scholarship deleted successfully and removed from member benefits",
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -148,7 +140,6 @@ export const getBenefitsByUserId = async (req, res) => {
       return res.status(404).json({ message: "Member not found" });
     }
 
-    // Log get by user
     await Logger.info(req.user._id, "Read", `Viewed scholarships for user: ${userId}`, userId, req.ip);
 
     res.status(200).json({

@@ -1,8 +1,23 @@
 import nodemailer from "nodemailer";
-import Logger from "../utils/logger.js"; // Make sure the path is correct
+import Logger from "../utils/Logger.js";
 
 export const sendEmail = async (req, res) => {
   const { name, email, message } = req.body;
+
+  // Basic validation example
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: "Name, email, and message are required" });
+  }
+
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    await Logger.error(
+      "com.ceb.emailctrl.sendEmail",
+      "Email service credentials not configured",
+      req.user?._id || null,
+      { ip: req.ip, userAgent: req.get("User-Agent") }
+    );
+    return res.status(500).json({ error: "Email service not configured properly" });
+  }
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -23,20 +38,30 @@ export const sendEmail = async (req, res) => {
   try {
     await transporter.sendMail(mailOptions);
 
-    await Logger.info("com.ceb.emailctrl.sendEmail", "Contact email sent successfully", null, {
-      sender: email,
-      name,
-      ip: req.ip,
-      userAgent: req.get("User-Agent"),
-    });
+    await Logger.info(
+      "com.ceb.emailctrl.sendEmail",
+      "Contact email sent successfully",
+      req.user?._id || null,
+      {
+        sender: email,
+        name,
+        ip: req.ip,
+        userAgent: req.get("User-Agent"),
+      }
+    );
 
     res.status(200).json({ message: "Email sent successfully!" });
   } catch (error) {
-    await Logger.error("com.ceb.emailctrl.sendEmail", "Failed to send email - " + error.message, null, {
-      sender: email,
-      ip: req.ip,
-      userAgent: req.get("User-Agent"),
-    });
+    await Logger.error(
+      "com.ceb.emailctrl.sendEmail",
+      "Failed to send email - " + error.message,
+      req.user?._id || null,
+      {
+        sender: email,
+        ip: req.ip,
+        userAgent: req.get("User-Agent"),
+      }
+    );
 
     res.status(500).json({ error: "Failed to send email" });
   }

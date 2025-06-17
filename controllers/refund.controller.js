@@ -26,19 +26,35 @@ export const createRefund = async (req, res) => {
     );
 
     if (!updatedMember) {
+      await Logger.warn(
+        "com.ceb.refundctrl.createRefund",
+        "Member not found with the provided EPF number",
+        req.user?._id || null,
+        { epf, ip: req.ip, userAgent: req.get("User-Agent") }
+      );
       return res.status(404).json({
         message: "Member not found with the provided EPF Number",
       });
     }
 
-    await Logger.info(req.user._id, "Create", `Created refund for EPF: ${epf}`, savedBenefit._id, req.ip);
+    await Logger.info(
+      "com.ceb.refundctrl.createRefund",
+      `Created refund for EPF: ${epf}`,
+      req.user?._id || null,
+      { benefitId: savedBenefit._id, ip: req.ip, userAgent: req.get("User-Agent") }
+    );
 
     res.status(201).json({
       message: "Refund created and added to member successfully",
       benefit: savedBenefit,
     });
   } catch (error) {
-    console.error(error);
+    await Logger.error(
+      "com.ceb.refundctrl.createRefund",
+      "Failed to create refund - " + error.message,
+      req.user?._id || null,
+      { ip: req.ip, userAgent: req.get("User-Agent") }
+    );
     res.status(500).json({
       message: "Failed to create Refund.",
       error: error.message,
@@ -53,10 +69,21 @@ export const viewAllRefunds = async (req, res) => {
   try {
     const benefits = await Refund.find();
 
-    await Logger.info(req.user._id, "Read", "Viewed all refund records", null, req.ip);
+    await Logger.info(
+      "com.ceb.refundctrl.viewAllRefunds",
+      "Viewed all refund records",
+      req.user?._id || null,
+      { ip: req.ip, userAgent: req.get("User-Agent") }
+    );
 
     res.status(200).json(benefits);
   } catch (error) {
+    await Logger.error(
+      "com.ceb.refundctrl.viewAllRefunds",
+      "Failed to view all refunds - " + error.message,
+      req.user?._id || null,
+      { ip: req.ip, userAgent: req.get("User-Agent") }
+    );
     res.status(400).json({ error: error.message });
   }
 };
@@ -68,13 +95,30 @@ export const viewSingleRefund = async (req, res) => {
   try {
     const benefit = await Refund.findById(req.params.id);
     if (!benefit) {
-      return res.status(404).json({ error: "Refund not found..!" });
+      await Logger.warn(
+        "com.ceb.refundctrl.viewSingleRefund",
+        "Refund not found",
+        req.user?._id || null,
+        { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+      );
+      return res.status(404).json({ error: "Refund not found" });
     }
 
-    await Logger.info(req.user._id, "Read", `Viewed single refund: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(
+      "com.ceb.refundctrl.viewSingleRefund",
+      `Viewed refund ID: ${req.params.id}`,
+      req.user?._id || null,
+      { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+    );
 
     res.status(200).json(benefit);
   } catch (error) {
+    await Logger.error(
+      "com.ceb.refundctrl.viewSingleRefund",
+      "Failed to view single refund - " + error.message,
+      req.user?._id || null,
+      { ip: req.ip, userAgent: req.get("User-Agent") }
+    );
     res.status(400).json({ error: error.message });
   }
 };
@@ -92,14 +136,32 @@ export const updateRefund = async (req, res) => {
         runValidators: true,
       }
     );
+
     if (!updatedBenefit) {
-      return res.status(404).json({ error: "Refund not found !" });
+      await Logger.warn(
+        "com.ceb.refundctrl.updateRefund",
+        "Refund not found for update",
+        req.user?._id || null,
+        { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+      );
+      return res.status(404).json({ error: "Refund not found" });
     }
 
-    await Logger.info(req.user._id, "Update", `Updated refund ID: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(
+      "com.ceb.refundctrl.updateRefund",
+      `Updated refund ID: ${req.params.id}`,
+      req.user?._id || null,
+      { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+    );
 
     res.status(200).json(updatedBenefit);
   } catch (error) {
+    await Logger.error(
+      "com.ceb.refundctrl.updateRefund",
+      "Failed to update refund - " + error.message,
+      req.user?._id || null,
+      { ip: req.ip, userAgent: req.get("User-Agent") }
+    );
     res.status(400).json({ error: error.message });
   }
 };
@@ -111,6 +173,12 @@ export const deleteRefund = async (req, res) => {
   try {
     const benefit = await Refund.findByIdAndDelete(req.params.id);
     if (!benefit) {
+      await Logger.warn(
+        "com.ceb.refundctrl.deleteRefund",
+        "Refund not found for deletion",
+        req.user?._id || null,
+        { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+      );
       return res.status(404).json({ error: "Refund not found" });
     }
 
@@ -120,12 +188,23 @@ export const deleteRefund = async (req, res) => {
       { new: true }
     );
 
-    await Logger.info(req.user._id, "Delete", `Deleted refund ID: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(
+      "com.ceb.refundctrl.deleteRefund",
+      `Deleted refund ID: ${req.params.id}`,
+      req.user?._id || null,
+      { refundId: req.params.id, epf: benefit.epf, ip: req.ip, userAgent: req.get("User-Agent") }
+    );
 
     res.status(200).json({
       message: "Refund deleted successfully and removed from member benefits",
     });
   } catch (error) {
+    await Logger.error(
+      "com.ceb.refundctrl.deleteRefund",
+      "Failed to delete refund - " + error.message,
+      req.user?._id || null,
+      { ip: req.ip, userAgent: req.get("User-Agent") }
+    );
     res.status(400).json({ error: error.message });
   }
 };
@@ -140,17 +219,33 @@ export const getBenefitsByUserId = async (req, res) => {
     const member = await Member.findById(userId).populate("refunds");
 
     if (!member) {
+      await Logger.warn(
+        "com.ceb.refundctrl.getBenefitsByUserId",
+        "Member not found for benefits fetch",
+        req.user?._id || null,
+        { userId, ip: req.ip, userAgent: req.get("User-Agent") }
+      );
       return res.status(404).json({ message: "Member not found" });
     }
 
-    await Logger.info(req.user._id, "Read", `Viewed refunds for user: ${userId}`, userId, req.ip);
+    await Logger.info(
+      "com.ceb.refundctrl.getBenefitsByUserId",
+      `Viewed refunds for user ID: ${userId}`,
+      req.user?._id || null,
+      { userId, ip: req.ip, userAgent: req.get("User-Agent") }
+    );
 
     res.status(200).json({
       message: "Benefits retrieved successfully",
       benefits: member.refunds,
     });
   } catch (error) {
-    console.error(error);
+    await Logger.error(
+      "com.ceb.refundctrl.getBenefitsByUserId",
+      "Failed to retrieve refunds - " + error.message,
+      req.user?._id || null,
+      { ip: req.ip, userAgent: req.get("User-Agent") }
+    );
     res.status(500).json({
       message: "Failed to retrieve benefits.",
       error: error.message,

@@ -31,7 +31,12 @@ export const createLoanApplication = async (req, res) => {
       return res.status(404).json({ message: "Member not found with the provided EPF number" });
     }
 
-    await Logger.info(req.user._id, "Create", `Loan created for EPF: ${epf}`, savedLoan._id, req.ip);
+    await Logger.info(
+      "Create",
+      `Loan created for EPF: ${epf}`,
+      req.user._id,
+      { ip: req.ip, loanId: savedLoan._id }
+    );
 
     res.status(201).json({
       message: "Loan created and added to member successfully",
@@ -58,7 +63,12 @@ export const getLoansByUserId = async (req, res) => {
       return res.status(404).json({ message: "Member not found" });
     }
 
-    await Logger.info(req.user._id, "Read", `Viewed loans of user ID: ${userId}`, userId, req.ip);
+    await Logger.info(
+      "View Loan",
+      `Viewed loans of user ID: ${userId}`,
+      req.user._id,
+      { ip: req.ip }
+    );
 
     res.status(200).json({
       message: "Loans retrieved successfully",
@@ -80,7 +90,12 @@ export const viewAllLoanApplications = async (req, res) => {
   try {
     const loans = await Loan.find();
 
-    await Logger.info(req.user._id, "Read", "Viewed all loan applications", null, req.ip);
+    await Logger.info(
+      "Read",
+      "Viewed all loan applications",
+      req.user._id,
+      { ip: req.ip }
+    );
 
     res.status(200).json(loans);
   } catch (error) {
@@ -101,7 +116,12 @@ export const getAllLoansByStatus = async (req, res) => {
 
     const loans = await Loan.find(filter);
 
-    await Logger.info(req.user._id, "Read", `Viewed loans filtered by status: ${status}`, null, req.ip);
+    await Logger.info(
+      "Read",
+      `Viewed loans filtered by status: ${status}`,
+      req.user._id,
+      { ip: req.ip }
+    );
 
     res.status(200).json(loans);
   } catch (error) {
@@ -119,7 +139,12 @@ export const viewSingleLoanApplication = async (req, res) => {
       return res.status(404).json({ error: "Loan application not found..!" });
     }
 
-    await Logger.info(req.user._id, "Read", `Viewed loan with ID: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(
+      "Read",
+      `Viewed loan with ID: ${req.params.id}`,
+      req.user._id,
+      { ip: req.ip }
+    );
 
     res.status(200).json(loan);
   } catch (error) {
@@ -157,7 +182,12 @@ export const updateLoanStatus = async (req, res) => {
       return res.status(404).json({ message: "Loan not found" });
     }
 
-    await Logger.info(req.user._id, "Update", `Updated loan status to '${loanStatus}'`, loanId, req.ip);
+    await Logger.info(
+      "Update",
+      `Updated loan status to '${loanStatus}'`,
+      req.user._id,
+      { ip: req.ip, loanId }
+    );
 
     res.status(200).json({
       message: "Loan status updated successfully",
@@ -186,7 +216,12 @@ export const updateLoanApplication = async (req, res) => {
       return res.status(404).json({ error: "Loan application not found !" });
     }
 
-    await Logger.info(req.user._id, "Update", "Updated loan application", req.params.id, req.ip);
+    await Logger.info(
+      "Update",
+      "Updated loan application",
+      req.user._id,
+      { ip: req.ip, loanId: req.params.id }
+    );
 
     res.status(200).json(loan);
   } catch (error) {
@@ -210,7 +245,12 @@ export const deleteLoanApplication = async (req, res) => {
       { new: true }
     );
 
-    await Logger.info(req.user._id, "Delete", "Deleted loan application", req.params.id, req.ip);
+    await Logger.info(
+      "Delete",
+      "Deleted loan application",
+      req.user._id,
+      { ip: req.ip, loanId: req.params.id }
+    );
 
     res.status(200).json({
       message: "Loan deleted successfully and removed from user loans",
@@ -236,7 +276,12 @@ export const generateLoanNumber = async (req, res) => {
       }
     }
 
-    await Logger.info(req.user._id, "Generate", "Generated unique loan number", null, req.ip);
+    await Logger.info(
+      "Generate",
+      "Generated unique loan number",
+      req.user._id,
+      { ip: req.ip }
+    );
 
     res.status(200).json(uniqueNumber);
   } catch (error) {
