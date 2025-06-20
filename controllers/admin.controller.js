@@ -1,5 +1,5 @@
 import Admin from "../models/admin.model.js";
-import Logger from "../utils/Logger.js";
+import Logger from "../utils/logger.js";
 import generateToken from "../utils/generateToken.js";
 
 // @desc Auhenticate Admin
