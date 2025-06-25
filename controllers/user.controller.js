@@ -1,7 +1,9 @@
 import Member from "../models/member.model.js";
 import generateToken from "../utils/generateToken.js";
-import Logger from "../utils/logger.js";
+import Logger from "../utils/Logger.js";
 import bcrypt from "bcrypt";
+import { getDeviceIPv4 } from "../utils/getIP.js";
+
 
 // @desc Authenticate User
 // @route POST /api/members/auth
@@ -19,7 +21,7 @@ export const authUser = async (req, res) => {
 
             await Logger.info("com.ceb.userctrl.authUser", "User logged in successfully", user._id, {
                 username: identifier,
-                ip: req.ip,
+                ip: getDeviceIPv4(),
                 userAgent: req.get("User-Agent"),
             });
 
@@ -32,7 +34,7 @@ export const authUser = async (req, res) => {
         } else {
             await Logger.warn("com.ceb.userctrl.authUser", "Invalid login attempt", user ? user._id : null, {
                 username: identifier,
-                ip: req.ip,
+                ip: getDeviceIPv4(),
                 userAgent: req.get("User-Agent"),
             });
             return res.status(401).json({ message: "Invalid EPF/ Email or Password!" });
@@ -40,7 +42,7 @@ export const authUser = async (req, res) => {
     } catch (error) {
         await Logger.error("com.ceb.userctrl.authUser", "User authentication failed - " + error.message, null, {
             username: identifier,
-            ip: req.ip,
+            ip: getDeviceIPv4(),
             userAgent: req.get("User-Agent"),
         });
 
@@ -119,7 +121,7 @@ export const logoutUser = async (req, res) => {
         });
 
         await Logger.info("com.ceb.userctrl.logoutUser", "User logged out", req.user?._id, {
-            ip: req.ip, // Logger added ✅
+            ip: getDeviceIPv4(), // Logger added ✅
         });
 
         res.status(200).json({ message: "User logged out" });
@@ -199,8 +201,7 @@ export const getLoggedInUserDetails = async (req, res) => {
 export const getAllUsers = async (req, res) => {
     try {
         const members = await Member.find();
-
-        await Logger.info("com.ceb.userctrl.getAllUsers", "Fetched all members", req.user?._id); // Logger added ✅
+        await Logger.info("com.ceb.userctrl.getAllUsers", "Viewed all member details", req.user?._id); // Logger added ✅
 
         res.json(members);
     } catch (error) {

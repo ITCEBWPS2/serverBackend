@@ -1,6 +1,7 @@
 import DeathFund from "../models/deathFund.model.js";
 import Member from "../models/member.model.js";
 import Logger from "../utils/Logger.js";
+import { getDeviceIPv4 } from "../utils/getIP.js";
 
 // @desc Create a Death Fund
 // @route POST /api/deathfunds
@@ -33,7 +34,7 @@ export const createDeathFund = async (req, res) => {
         req.user?._id || null,
         {
           epf,
-          ip: req.ip,
+          ip: getDeviceIPv4(),
           userAgent: req.get("User-Agent"),
         }
       );
@@ -48,7 +49,7 @@ export const createDeathFund = async (req, res) => {
       req.user?._id || null,
       {
         epf,
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -63,7 +64,7 @@ export const createDeathFund = async (req, res) => {
       "Error creating death fund - " + error.message,
       req.user?._id || null,
       {
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -86,7 +87,7 @@ export const viewAllDeathFunds = async (req, res) => {
       "Fetched all death funds",
       req.user?._id || null,
       {
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -98,7 +99,7 @@ export const viewAllDeathFunds = async (req, res) => {
       "Error fetching all death funds - " + error.message,
       req.user?._id || null,
       {
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -120,7 +121,7 @@ export const viewSingleDeathFund = async (req, res) => {
         req.user?._id || null,
         {
           id: req.params.id,
-          ip: req.ip,
+          ip: getDeviceIPv4(),
           userAgent: req.get("User-Agent"),
         }
       );
@@ -133,7 +134,7 @@ export const viewSingleDeathFund = async (req, res) => {
       req.user?._id || null,
       {
         id: req.params.id,
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -145,7 +146,7 @@ export const viewSingleDeathFund = async (req, res) => {
       "Error fetching single death fund - " + error.message,
       req.user?._id || null,
       {
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -174,7 +175,7 @@ export const updateDeathFund = async (req, res) => {
         req.user?._id || null,
         {
           id: req.params.id,
-          ip: req.ip,
+          ip: getDeviceIPv4(),
           userAgent: req.get("User-Agent"),
         }
       );
@@ -187,7 +188,7 @@ export const updateDeathFund = async (req, res) => {
       req.user?._id || null,
       {
         id: req.params.id,
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -199,7 +200,7 @@ export const updateDeathFund = async (req, res) => {
       "Error updating death fund - " + error.message,
       req.user?._id || null,
       {
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -221,7 +222,7 @@ export const deleteDeathFund = async (req, res) => {
         req.user?._id || null,
         {
           id: req.params.id,
-          ip: req.ip,
+          ip: getDeviceIPv4(),
           userAgent: req.get("User-Agent"),
         }
       );
@@ -241,7 +242,7 @@ export const deleteDeathFund = async (req, res) => {
       {
         id: req.params.id,
         epf: benefit.epf,
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -256,7 +257,7 @@ export const deleteDeathFund = async (req, res) => {
       "Error deleting death fund - " + error.message,
       req.user?._id || null,
       {
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -280,7 +281,7 @@ export const getBenefitsByUserId = async (req, res) => {
         "Member not found for benefits fetch",
         req.user?._id || null,
         {
-          ip: req.ip,
+          ip: getDeviceIPv4(),
           userAgent: req.get("User-Agent"),
         }
       );
@@ -292,7 +293,7 @@ export const getBenefitsByUserId = async (req, res) => {
       "Retrieved death fund benefits by user",
       req.user?._id || null,
       {
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -307,7 +308,7 @@ export const getBenefitsByUserId = async (req, res) => {
       "Error retrieving benefits - " + error.message,
       req.user?._id || null,
       {
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );

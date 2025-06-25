@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import Logger from "../utils/Logger.js";
+import { getDeviceIPv4 } from "../utils/getIP.js";
 
 export const sendEmail = async (req, res) => {
   const { name, email, message } = req.body;
@@ -14,7 +15,7 @@ export const sendEmail = async (req, res) => {
       "com.ceb.emailctrl.sendEmail",
       "Email service credentials not configured",
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
     return res.status(500).json({ error: "Email service not configured properly" });
   }
@@ -45,7 +46,7 @@ export const sendEmail = async (req, res) => {
       {
         sender: email,
         name,
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -58,7 +59,7 @@ export const sendEmail = async (req, res) => {
       req.user?._id || null,
       {
         sender: email,
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );

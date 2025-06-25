@@ -1,6 +1,7 @@
 import Refund from "../models/refund.model.js";
 import Member from "../models/member.model.js";
 import Logger from "../utils/Logger.js";
+import { getDeviceIPv4 } from "../utils/getIP.js";
 
 // @desc Create a Refund
 // @route POST /api/refunds
@@ -30,7 +31,7 @@ export const createRefund = async (req, res) => {
         "com.ceb.refundctrl.createRefund",
         "Member not found with the provided EPF number",
         req.user?._id || null,
-        { epf, ip: req.ip, userAgent: req.get("User-Agent") }
+        { epf, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({
         message: "Member not found with the provided EPF Number",
@@ -41,7 +42,7 @@ export const createRefund = async (req, res) => {
       "com.ceb.refundctrl.createRefund",
       `Created refund for EPF: ${epf}`,
       req.user?._id || null,
-      { benefitId: savedBenefit._id, ip: req.ip, userAgent: req.get("User-Agent") }
+      { benefitId: savedBenefit._id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(201).json({
@@ -53,7 +54,7 @@ export const createRefund = async (req, res) => {
       "com.ceb.refundctrl.createRefund",
       "Failed to create refund - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
     res.status(500).json({
       message: "Failed to create Refund.",
@@ -73,7 +74,7 @@ export const viewAllRefunds = async (req, res) => {
       "com.ceb.refundctrl.viewAllRefunds",
       "Viewed all refund records",
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json(benefits);
@@ -82,7 +83,7 @@ export const viewAllRefunds = async (req, res) => {
       "com.ceb.refundctrl.viewAllRefunds",
       "Failed to view all refunds - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
     res.status(400).json({ error: error.message });
   }
@@ -99,7 +100,7 @@ export const viewSingleRefund = async (req, res) => {
         "com.ceb.refundctrl.viewSingleRefund",
         "Refund not found",
         req.user?._id || null,
-        { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+        { refundId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({ error: "Refund not found" });
     }
@@ -108,7 +109,7 @@ export const viewSingleRefund = async (req, res) => {
       "com.ceb.refundctrl.viewSingleRefund",
       `Viewed refund ID: ${req.params.id}`,
       req.user?._id || null,
-      { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+      { refundId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json(benefit);
@@ -117,7 +118,7 @@ export const viewSingleRefund = async (req, res) => {
       "com.ceb.refundctrl.viewSingleRefund",
       "Failed to view single refund - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
     res.status(400).json({ error: error.message });
   }
@@ -142,7 +143,7 @@ export const updateRefund = async (req, res) => {
         "com.ceb.refundctrl.updateRefund",
         "Refund not found for update",
         req.user?._id || null,
-        { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+        { refundId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({ error: "Refund not found" });
     }
@@ -151,7 +152,7 @@ export const updateRefund = async (req, res) => {
       "com.ceb.refundctrl.updateRefund",
       `Updated refund ID: ${req.params.id}`,
       req.user?._id || null,
-      { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+      { refundId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json(updatedBenefit);
@@ -160,7 +161,7 @@ export const updateRefund = async (req, res) => {
       "com.ceb.refundctrl.updateRefund",
       "Failed to update refund - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
     res.status(400).json({ error: error.message });
   }
@@ -177,7 +178,7 @@ export const deleteRefund = async (req, res) => {
         "com.ceb.refundctrl.deleteRefund",
         "Refund not found for deletion",
         req.user?._id || null,
-        { refundId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+        { refundId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({ error: "Refund not found" });
     }
@@ -192,7 +193,7 @@ export const deleteRefund = async (req, res) => {
       "com.ceb.refundctrl.deleteRefund",
       `Deleted refund ID: ${req.params.id}`,
       req.user?._id || null,
-      { refundId: req.params.id, epf: benefit.epf, ip: req.ip, userAgent: req.get("User-Agent") }
+      { refundId: req.params.id, epf: benefit.epf, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json({
@@ -203,7 +204,7 @@ export const deleteRefund = async (req, res) => {
       "com.ceb.refundctrl.deleteRefund",
       "Failed to delete refund - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
     res.status(400).json({ error: error.message });
   }
@@ -223,7 +224,7 @@ export const getBenefitsByUserId = async (req, res) => {
         "com.ceb.refundctrl.getBenefitsByUserId",
         "Member not found for benefits fetch",
         req.user?._id || null,
-        { userId, ip: req.ip, userAgent: req.get("User-Agent") }
+        { userId, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({ message: "Member not found" });
     }
@@ -232,7 +233,7 @@ export const getBenefitsByUserId = async (req, res) => {
       "com.ceb.refundctrl.getBenefitsByUserId",
       `Viewed refunds for user ID: ${userId}`,
       req.user?._id || null,
-      { userId, ip: req.ip, userAgent: req.get("User-Agent") }
+      { userId, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json({
@@ -244,7 +245,7 @@ export const getBenefitsByUserId = async (req, res) => {
       "com.ceb.refundctrl.getBenefitsByUserId",
       "Failed to retrieve refunds - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
     res.status(500).json({
       message: "Failed to retrieve benefits.",

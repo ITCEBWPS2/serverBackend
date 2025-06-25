@@ -1,6 +1,8 @@
 import Scholarship from "../models/scholarship.model.js";
 import Member from "../models/member.model.js";
 import Logger from "../utils/Logger.js";
+import { getDeviceIPv4 } from "../utils/getIP.js";
+
 
 // @desc Create a Scholarship
 // @route POST /api/scholarships
@@ -30,7 +32,7 @@ export const createScholarship = async (req, res) => {
       });
     }
 
-    await Logger.info(req.user._id, "Create", `Created scholarship for EPF: ${epf}`, savedBenefit._id, req.ip);
+    await Logger.info(req.user._id, "Create", `Created scholarship for EPF: ${epf}`, savedBenefit._id, getDeviceIPv4());
 
     res.status(201).json({
       message: "Scholarship created and added to member successfully",
@@ -52,7 +54,7 @@ export const viewAllScholarships = async (req, res) => {
   try {
     const benefits = await Scholarship.find();
 
-    await Logger.info(req.user._id, "Read", "Viewed all scholarships", null, req.ip);
+    await Logger.info(req.user._id, "Read", "Viewed all scholarships", null, getDeviceIPv4());
 
     res.status(200).json(benefits);
   } catch (error) {
@@ -70,7 +72,7 @@ export const viewSingleScholarship = async (req, res) => {
       return res.status(404).json({ message: "Scholarship not found!" });
     }
 
-    await Logger.info(req.user._id, "Read", `Viewed scholarship ID: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(req.user._id, "Read", `Viewed scholarship ID: ${req.params.id}`, req.params.id, getDeviceIPv4());
 
     res.status(200).json(benefit);
   } catch (error) {
@@ -93,7 +95,7 @@ export const updateScholarship = async (req, res) => {
       return res.status(404).json({ message: "Scholarship not found!" });
     }
 
-    await Logger.info(req.user._id, "Update", `Updated scholarship ID: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(req.user._id, "Update", `Updated scholarship ID: ${req.params.id}`, req.params.id, getDeviceIPv4());
 
     res.status(200).json(updatedBenefit);
   } catch (error) {
@@ -117,7 +119,7 @@ export const deleteScholarship = async (req, res) => {
       { new: true }
     );
 
-    await Logger.info(req.user._id, "Delete", `Deleted scholarship ID: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(req.user._id, "Delete", `Deleted scholarship ID: ${req.params.id}`, req.params.id, getDeviceIPv4());
 
     res.status(200).json({
       message: "Scholarship deleted successfully and removed from member benefits",
@@ -140,7 +142,7 @@ export const getBenefitsByUserId = async (req, res) => {
       return res.status(404).json({ message: "Member not found" });
     }
 
-    await Logger.info(req.user._id, "Read", `Viewed scholarships for user: ${userId}`, userId, req.ip);
+    await Logger.info(req.user._id, "Read", `Viewed scholarships for user: ${userId}`, userId, getDeviceIPv4());
 
     res.status(200).json({
       message: "Benefits retrieved successfully",

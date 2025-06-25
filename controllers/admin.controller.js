@@ -1,6 +1,7 @@
 import Admin from "../models/admin.model.js";
-import Logger from "../utils/logger.js";
+import Logger from "../utils/Logger.js";
 import generateToken from "../utils/generateToken.js";
+import { getDeviceIPv4 } from "../utils/getIP.js";
 
 // @desc Auhenticate Admin
 // @route POST /api/admins/auth
@@ -19,7 +20,7 @@ export const authAdmin = async (req, res) => {
 
             await Logger.info("com.ceb.adminctrl.authAdmin", "Admin logged in successfully", admin._id, {
                 username: identifier,
-                ip: req.ip,
+                ip: getDeviceIPv4(),
                 userAgent: req.get("User-Agent"),
             });
 
@@ -32,7 +33,7 @@ export const authAdmin = async (req, res) => {
         } else {
             await Logger.warn("com.ceb.adminctrl.authAdmin", "Invalid login attempt", admin ? admin._id : null, {
                 username: identifier,
-                ip: req.ip,
+                ip: getDeviceIPv4(),
                 userAgent: req.get("User-Agent"),
             });
             return res.status(401).json({ message: "Invalid EPF/ Email or Password!" });
@@ -40,7 +41,7 @@ export const authAdmin = async (req, res) => {
     } catch (error) {
         await Logger.error("com.ceb.adminctrl.authAdmin", "Admin authentication failed - " + error.message, null, {
             username: identifier,
-            ip: req.ip,
+            ip: getDeviceIPv4(),
             userAgent: req.get("User-Agent"),
         });
         return res.status(500).json({ message: "Server error" });
@@ -61,7 +62,7 @@ export const registerAdmin = async (req, res, next) => {
         if (adminExists) {
             await Logger.warn("com.ceb.adminctrl.registerAdmin", "Admin registration failed - user already exists", null, {
                 username: email,
-                ip: req.ip,
+                ip: getDeviceIPv4(),
                 userAgent: req.get("User-Agent"),
             });
             return res.status(400).json({ message: "User already exists" });
@@ -77,7 +78,7 @@ export const registerAdmin = async (req, res, next) => {
 
         await Logger.info("com.ceb.adminctrl.registerAdmin", "Admin registered successfully", newAdmin._id, {
             username: email,
-            ip: req.ip,
+            ip: getDeviceIPv4(),
             userAgent: req.get("User-Agent"),
         });
 
@@ -85,7 +86,7 @@ export const registerAdmin = async (req, res, next) => {
     } catch (error) {
         await Logger.critical("com.ceb.adminctrl.registerAdmin", "Admin registration failed - " + error.message, null, {
             username: email,
-            ip: req.ip,
+            ip: getDeviceIPv4(),
             userAgent: req.get("User-Agent"),
         });
         return res.status(500).json({

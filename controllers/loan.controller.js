@@ -1,6 +1,8 @@
 import Loan from "../models/loan.model.js";
 import Member from "../models/member.model.js";
 import Logger from "../utils/Logger.js";
+import { getDeviceIPv4 } from "../utils/getIP.js";
+
 
 // @desc Create a Loan Application
 // @route POST /api/loans
@@ -20,6 +22,7 @@ export const createLoanApplication = async (req, res) => {
     });
 
     const savedLoan = await newLoan.save();
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
     const updatedMember = await Member.findOneAndUpdate(
       { epf },
@@ -35,7 +38,7 @@ export const createLoanApplication = async (req, res) => {
       "Create",
       `Loan created for EPF: ${epf}`,
       req.user._id,
-      { ip: req.ip, loanId: savedLoan._id }
+      { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, loanId: savedLoan._id }
     );
 
     res.status(201).json({
@@ -67,7 +70,7 @@ export const getLoansByUserId = async (req, res) => {
       "View Loan",
       `Viewed loans of user ID: ${userId}`,
       req.user._id,
-      { ip: req.ip }
+      { ip: getDeviceIPv4() }
     );
 
     res.status(200).json({
@@ -94,7 +97,7 @@ export const viewAllLoanApplications = async (req, res) => {
       "Read",
       "Viewed all loan applications",
       req.user._id,
-      { ip: req.ip }
+      { ip: getDeviceIPv4() }
     );
 
     res.status(200).json(loans);
@@ -120,7 +123,7 @@ export const getAllLoansByStatus = async (req, res) => {
       "Read",
       `Viewed loans filtered by status: ${status}`,
       req.user._id,
-      { ip: req.ip }
+      { ip: getDeviceIPv4() }
     );
 
     res.status(200).json(loans);
@@ -143,7 +146,7 @@ export const viewSingleLoanApplication = async (req, res) => {
       "Read",
       `Viewed loan with ID: ${req.params.id}`,
       req.user._id,
-      { ip: req.ip }
+      { ip: getDeviceIPv4() }
     );
 
     res.status(200).json(loan);
@@ -186,7 +189,7 @@ export const updateLoanStatus = async (req, res) => {
       "Update",
       `Updated loan status to '${loanStatus}'`,
       req.user._id,
-      { ip: req.ip, loanId }
+      { ip: getDeviceIPv4(), loanId }
     );
 
     res.status(200).json({
@@ -220,7 +223,7 @@ export const updateLoanApplication = async (req, res) => {
       "Update",
       "Updated loan application",
       req.user._id,
-      { ip: req.ip, loanId: req.params.id }
+      { ip: getDeviceIPv4(), loanId: req.params.id }
     );
 
     res.status(200).json(loan);
@@ -249,7 +252,7 @@ export const deleteLoanApplication = async (req, res) => {
       "Delete",
       "Deleted loan application",
       req.user._id,
-      { ip: req.ip, loanId: req.params.id }
+      { ip: getDeviceIPv4(), loanId: req.params.id }
     );
 
     res.status(200).json({
@@ -280,7 +283,7 @@ export const generateLoanNumber = async (req, res) => {
       "Generate",
       "Generated unique loan number",
       req.user._id,
-      { ip: req.ip }
+      { ip: getDeviceIPv4() }
     );
 
     res.status(200).json(uniqueNumber);

@@ -1,6 +1,7 @@
 import Retirement from "../models/retirement.model.js";
 import Member from "../models/member.model.js";
 import Logger from "../utils/Logger.js";
+import { getDeviceIPv4 } from "../utils/getIP.js";
 
 // @desc Create a Retirement
 // @route POST /api/retirements
@@ -30,7 +31,7 @@ export const createRetirement = async (req, res) => {
       });
     }
 
-    await Logger.info(req.user._id, "Create", `Created retirement for EPF: ${epf}`, savedBenefit._id, req.ip);
+    await Logger.info(req.user._id, "Create", `Created retirement for EPF: ${epf}`, savedBenefit._id, getDeviceIPv4());
 
     res.status(201).json({
       message: "Retirement Gift created and added to member successfully",
@@ -52,7 +53,7 @@ export const viewAllRetirements = async (req, res) => {
   try {
     const benefits = await Retirement.find();
 
-    await Logger.info(req.user._id, "Read", "Viewed all retirement records", null, req.ip);
+    await Logger.info(req.user._id, "Read", "Viewed all retirement records", null, getDeviceIPv4());
 
     res.status(200).json(benefits);
   } catch (error) {
@@ -70,7 +71,7 @@ export const viewSingleRetirement = async (req, res) => {
       return res.status(404).json({ error: "Retirement not found..!" });
     }
 
-    await Logger.info(req.user._id, "Read", `Viewed retirement benefit: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(req.user._id, "Read", `Viewed retirement benefit: ${req.params.id}`, req.params.id, getDeviceIPv4());
 
     res.status(200).json(benefit);
   } catch (error) {
@@ -95,7 +96,7 @@ export const updateRetirement = async (req, res) => {
       return res.status(404).json({ error: "Retirement not found !" });
     }
 
-    await Logger.info(req.user._id, "Update", `Updated retirement benefit: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(req.user._id, "Update", `Updated retirement benefit: ${req.params.id}`, req.params.id, getDeviceIPv4());
 
     res.status(200).json(updatedBenefit);
   } catch (error) {
@@ -119,7 +120,7 @@ export const deleteRetirement = async (req, res) => {
       { new: true }
     );
 
-    await Logger.info(req.user._id, "Delete", `Deleted retirement benefit: ${req.params.id}`, req.params.id, req.ip);
+    await Logger.info(req.user._id, "Delete", `Deleted retirement benefit: ${req.params.id}`, req.params.id, getDeviceIPv4());
 
     res.status(200).json({
       message: "Retirement Gift deleted successfully and removed from member benefits",
@@ -142,7 +143,7 @@ export const getBenefitsByUserId = async (req, res) => {
       return res.status(404).json({ message: "Member not found" });
     }
 
-    await Logger.info(req.user._id, "Read", `Viewed retirements for user: ${userId}`, userId, req.ip);
+    await Logger.info(req.user._id, "Read", `Viewed retirements for user: ${userId}`, userId, getDeviceIPv4());
 
     res.status(200).json({
       message: "Benefits retrieved successfully",

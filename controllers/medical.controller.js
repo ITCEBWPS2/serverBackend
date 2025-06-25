@@ -1,6 +1,7 @@
 import Medical from "../models/medical.model.js";
 import Member from "../models/member.model.js";
 import Logger from "../utils/Logger.js";
+import { getDeviceIPv4 } from "../utils/getIP.js";
 
 // @desc Create a Medical
 // @route POST /api/medicals
@@ -29,7 +30,7 @@ export const createMedical = async (req, res) => {
         "com.ceb.medicalctrl.createMedical",
         "Member not found with the provided EPF number",
         req.user?._id || null,
-        { epf, ip: req.ip, userAgent: req.get("User-Agent") }
+        { epf, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({
         message: "Member not found with the provided EPF number",
@@ -42,7 +43,7 @@ export const createMedical = async (req, res) => {
       req.user?._id || null,
       {
         benefitId: savedBenefit._id,
-        ip: req.ip,
+        ip: getDeviceIPv4(),
         userAgent: req.get("User-Agent"),
       }
     );
@@ -56,7 +57,7 @@ export const createMedical = async (req, res) => {
       "com.ceb.medicalctrl.createMedical",
       "Failed to create medical benefit - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(500).json({
@@ -77,7 +78,7 @@ export const viewAllMedicals = async (req, res) => {
       "com.ceb.medicalctrl.viewAllMedicals",
       "Viewed all medical records",
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json(benefits);
@@ -86,7 +87,7 @@ export const viewAllMedicals = async (req, res) => {
       "com.ceb.medicalctrl.viewAllMedicals",
       "Failed to view all medicals - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(400).json({ error: error.message });
@@ -104,7 +105,7 @@ export const viewSingleMedical = async (req, res) => {
         "com.ceb.medicalctrl.viewSingleMedical",
         "Medical record not found",
         req.user?._id || null,
-        { medicalId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+        { medicalId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({ error: "Medical not found" });
     }
@@ -113,7 +114,7 @@ export const viewSingleMedical = async (req, res) => {
       "com.ceb.medicalctrl.viewSingleMedical",
       `Viewed medical record ID: ${req.params.id}`,
       req.user?._id || null,
-      { medicalId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+      { medicalId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json(benefit);
@@ -122,7 +123,7 @@ export const viewSingleMedical = async (req, res) => {
       "com.ceb.medicalctrl.viewSingleMedical",
       "Failed to view single medical - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(400).json({ error: error.message });
@@ -148,7 +149,7 @@ export const updateMedical = async (req, res) => {
         "com.ceb.medicalctrl.updateMedical",
         "Medical record not found for update",
         req.user?._id || null,
-        { medicalId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+        { medicalId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({ error: "Medical not found" });
     }
@@ -157,7 +158,7 @@ export const updateMedical = async (req, res) => {
       "com.ceb.medicalctrl.updateMedical",
       `Updated medical record ID: ${req.params.id}`,
       req.user?._id || null,
-      { medicalId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+      { medicalId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json(updatedBenefit);
@@ -166,7 +167,7 @@ export const updateMedical = async (req, res) => {
       "com.ceb.medicalctrl.updateMedical",
       "Failed to update medical - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(400).json({ error: error.message });
@@ -184,7 +185,7 @@ export const deleteMedical = async (req, res) => {
         "com.ceb.medicalctrl.deleteMedical",
         "Medical record not found for deletion",
         req.user?._id || null,
-        { medicalId: req.params.id, ip: req.ip, userAgent: req.get("User-Agent") }
+        { medicalId: req.params.id, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({ error: "Medical not found" });
     }
@@ -199,7 +200,7 @@ export const deleteMedical = async (req, res) => {
       "com.ceb.medicalctrl.deleteMedical",
       `Deleted medical record ID: ${req.params.id}`,
       req.user?._id || null,
-      { medicalId: req.params.id, epf: benefit.epf, ip: req.ip, userAgent: req.get("User-Agent") }
+      { medicalId: req.params.id, epf: benefit.epf, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json({
@@ -210,7 +211,7 @@ export const deleteMedical = async (req, res) => {
       "com.ceb.medicalctrl.deleteMedical",
       "Failed to delete medical - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(400).json({ error: error.message });
@@ -231,7 +232,7 @@ export const getBenefitsByUserId = async (req, res) => {
         "com.ceb.medicalctrl.getBenefitsByUserId",
         "Member not found for benefits fetch",
         req.user?._id || null,
-        { userId, ip: req.ip, userAgent: req.get("User-Agent") }
+        { userId, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
       );
       return res.status(404).json({ message: "Member not found" });
     }
@@ -240,7 +241,7 @@ export const getBenefitsByUserId = async (req, res) => {
       "com.ceb.medicalctrl.getBenefitsByUserId",
       `Viewed medical benefits for user ID: ${userId}`,
       req.user?._id || null,
-      { userId, ip: req.ip, userAgent: req.get("User-Agent") }
+      { userId, ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(200).json({
@@ -252,7 +253,7 @@ export const getBenefitsByUserId = async (req, res) => {
       "com.ceb.medicalctrl.getBenefitsByUserId",
       "Failed to retrieve medical benefits - " + error.message,
       req.user?._id || null,
-      { ip: req.ip, userAgent: req.get("User-Agent") }
+      { ip: getDeviceIPv4(), userAgent: req.get("User-Agent") }
     );
 
     res.status(500).json({
