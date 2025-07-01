@@ -18,11 +18,11 @@ export const authAdmin = async (req, res) => {
             // Generate and set token in cookie
             const token = generateToken(admin._id, res);
 
-            await Logger.info("com.ceb.adminctrl.authAdmin", "Admin logged in successfully", admin._id, {
-                username: identifier,
-                ip: getDeviceIPv4(),
-                userAgent: req.get("User-Agent"),
-            });
+            // await Logger.info("com.ceb.adminctrl.authAdmin", "Admin logged in successfully", admin._id, {
+            //     username: identifier,
+            //     ip: getDeviceIPv4(),
+            //     userAgent: req.get("User-Agent"),
+            // });
 
             return res.status(200).json({
                 _id: admin._id,
@@ -31,19 +31,19 @@ export const authAdmin = async (req, res) => {
                 token,
             });
         } else {
-            await Logger.warn("com.ceb.adminctrl.authAdmin", "Invalid login attempt", admin ? admin._id : null, {
-                username: identifier,
-                ip: getDeviceIPv4(),
-                userAgent: req.get("User-Agent"),
-            });
+            // await Logger.warn("com.ceb.adminctrl.authAdmin", "Invalid login attempt", admin ? admin._id : null, {
+            //     username: identifier,
+            //     ip: getDeviceIPv4(),
+            //     userAgent: req.get("User-Agent"),
+            // });
             return res.status(401).json({ message: "Invalid EPF/ Email or Password!" });
         }
     } catch (error) {
-        await Logger.error("com.ceb.adminctrl.authAdmin", "Admin authentication failed - " + error.message, null, {
-            username: identifier,
-            ip: getDeviceIPv4(),
-            userAgent: req.get("User-Agent"),
-        });
+        // await Logger.error("com.ceb.adminctrl.authAdmin", "Admin authentication failed - " + error.message, null, {
+        //     username: identifier,
+        //     ip: getDeviceIPv4(),
+        //     userAgent: req.get("User-Agent"),
+        // });
         return res.status(500).json({ message: "Server error" });
     }
 };
@@ -60,11 +60,11 @@ export const registerAdmin = async (req, res, next) => {
         });
 
         if (adminExists) {
-            await Logger.warn("com.ceb.adminctrl.registerAdmin", "Admin registration failed - user already exists", null, {
-                username: email,
-                ip: getDeviceIPv4(),
-                userAgent: req.get("User-Agent"),
-            });
+            // await Logger.warn("com.ceb.adminctrl.registerAdmin", "Admin registration failed - user already exists", null, {
+            //     username: email,
+            //     ip: getDeviceIPv4(),
+            //     userAgent: req.get("User-Agent"),
+            // });
             return res.status(400).json({ message: "User already exists" });
         }
 
@@ -76,19 +76,19 @@ export const registerAdmin = async (req, res, next) => {
 
         newAdmin = await newAdmin.save();
 
-        await Logger.info("com.ceb.adminctrl.registerAdmin", "Admin registered successfully", newAdmin._id, {
-            username: email,
-            ip: getDeviceIPv4(),
-            userAgent: req.get("User-Agent"),
-        });
+        // await Logger.info("com.ceb.adminctrl.registerAdmin", "Admin registered successfully", newAdmin._id, {
+        //     username: email,
+        //     ip: getDeviceIPv4(),
+        //     userAgent: req.get("User-Agent"),
+        // });
 
         return res.status(201).json({ data: { user: newAdmin } });
     } catch (error) {
-        await Logger.critical("com.ceb.adminctrl.registerAdmin", "Admin registration failed - " + error.message, null, {
-            username: email,
-            ip: getDeviceIPv4(),
-            userAgent: req.get("User-Agent"),
-        });
+        // await Logger.critical("com.ceb.adminctrl.registerAdmin", "Admin registration failed - " + error.message, null, {
+        //     username: email,
+        //     ip: getDeviceIPv4(),
+        //     userAgent: req.get("User-Agent"),
+        // });
         return res.status(500).json({
             message: "Server error",
             error: error.message,
